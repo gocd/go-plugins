@@ -1,0 +1,11 @@
+**/go-plugin-api*.jar
+.idea/
+**/.idea/
+**/target/
+target/
+**/dist/
+go-plugins-dist/
+*.ipr
+*.iml
+**/*.ipr
+**/*.iml

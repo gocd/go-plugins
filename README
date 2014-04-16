@@ -1,0 +1,11 @@
+This location hosts all the plugins created by ThoughtWorks Go. The directory follows the below structure:
+
+repo:
+  plugin-1:
+    src:
+    test:
+    buildfile.xml
+  plugin-2:
+    src:
+    ... 
+  README

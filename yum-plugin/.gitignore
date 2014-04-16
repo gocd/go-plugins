@@ -1,0 +1,8 @@
+dist/*
+out/*
+target/*
+*.iws
+go-plugin-api*.jar
+reports/*
+.idea/*
+yum-repo-exec-poller.iml
