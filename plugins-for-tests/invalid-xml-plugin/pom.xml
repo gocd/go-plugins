@@ -21,17 +21,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.thoughtworks.go</groupId>
-    <artifactId>plugin-with-invalid-id</artifactId>
+    <artifactId>invalid-xml-plugin</artifactId>
     <version>1.0</version>
 
     <parent>
         <groupId>com.thoughtworks.go</groupId>
         <artifactId>go-plugins</artifactId>
         <version>1.0</version>
-        <relativePath>../</relativePath>
+        <relativePath>../../</relativePath>
     </parent>
 
     <properties>
-        <main.dir>${project.basedir}/../</main.dir>
+        <main.dir>${project.basedir}/../../</main.dir>
     </properties>
+
 </project>

@@ -43,15 +43,15 @@
     </dependencies>
 
     <modules>
-        <module>invalid-xml-plugin</module>
-        <module>plugin-with-invalid-id</module>
-        <module>plugin-with-multiple-load-methods</module>
-        <module>test-curl-plugin</module>
-        <module>test-donothing-plugin</module>
-        <module>test-valid-innerclass-plugin</module>
-        <module>test-valid-staticclass-plugin</module>
-        <module>test-valid-subclass-plugin</module>
-        <module>test-with-some-plugin-xml-values</module>
+        <module>plugins-for-tests/invalid-xml-plugin</module>
+        <module>plugins-for-tests/plugin-with-invalid-id</module>
+        <module>plugins-for-tests/plugin-with-multiple-load-methods</module>
+        <module>plugins-for-tests/test-curl-plugin</module>
+        <module>plugins-for-tests/test-donothing-plugin</module>
+        <module>plugins-for-tests/test-valid-innerclass-plugin</module>
+        <module>plugins-for-tests/test-valid-staticclass-plugin</module>
+        <module>plugins-for-tests/test-valid-subclass-plugin</module>
+        <module>plugins-for-tests/test-with-some-plugin-xml-values</module>
         <module>yum-plugin</module>
     </modules>
 
