@@ -7,5 +7,6 @@ target/
 go-plugins-dist/
 *.ipr
 *.iml
+*.iws
 **/*.ipr
 **/*.iml
