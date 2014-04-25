@@ -17,22 +17,30 @@
 package com.tw.go.task.curl;
 
 import com.thoughtworks.go.plugin.api.annotation.Extension;
+import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
+import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
 import com.thoughtworks.go.plugin.api.task.Task;
 import com.thoughtworks.go.plugin.api.task.TaskConfig;
 import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 import com.thoughtworks.go.plugin.api.task.TaskView;
-import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
 
 @Extension
 public class CurlTask implements Task {
 
-    public static final String MARKDOWN_INDEX_PAGE = "http://daringfireball.net/projects/markdown/index.text";
     public static final String URL_PROPERTY = "Url";
+    public static final String ADDITIONAL_OPTIONS = "AdditionalOptions";
+    public static final String SECURE_CONNECTION = "yes";
+    public static final String SECURE_CONNECTION_PROPERTY = "SecureConnection";
+    public static final String REQUEST_TYPE = "-G";
+    public static final String REQUEST_PROPERTY = "RequestType";
 
     @Override
     public TaskConfig config() {
         TaskConfig config = new TaskConfig();
-        config.addProperty(URL_PROPERTY).withDefault(MARKDOWN_INDEX_PAGE);
+        config.addProperty(URL_PROPERTY);
+        config.addProperty(SECURE_CONNECTION_PROPERTY).withDefault(SECURE_CONNECTION);
+        config.addProperty(REQUEST_PROPERTY).withDefault(REQUEST_TYPE);
+        config.addProperty(ADDITIONAL_OPTIONS);
         return config;
     }
 
@@ -51,16 +59,48 @@ public class CurlTask implements Task {
 
             @Override
             public String template() {
-                return "<label>URL:</label>\n" +
-                        "<input type=\"text\" ng-model=\"Url\"></input>";
+                return "<div class=\"form_item_block\">" +
+                        "<label>URL:<span class=\"asterisk\">*</span></label>\n"+
+                        "<input type=\"url\" ng-model=\"Url\" ng-required=\"true\"></input>"+
+                        "<span class=\"form_error\" ng-show=\"GOINPUTNAME[Url].$error.url\">Incorrect url format.</span>"+
+                        "<span class=\"form_error\" ng-show=\"GOINPUTNAME[Url].$error.server\">{{ GOINPUTNAME[Url].$error.server }}</span>" +
+                        "</div>" +
+
+                        "<div class=\"form_item_block\">" +
+                        "<label>Secure Connection:</label>\n"+
+
+                        "<div class=\"checkbox_row\">" +
+                        "<input id=\"secureConnectionYes\" type=\"radio\" ng-model=\"SecureConnection\" value=\"yes\">" +
+                        "<label for=\"secureConnectionYes\">Yes</label>" +
+
+                        "<input id=\"secureConnectionNo\" type=\"radio\" ng-model=\"SecureConnection\" value=\"no\">" +
+                        "<label for=\"secureConnectionNo\">No</label>" +
+                        "</div>"+
+                        "</div>" +
+
+                        "<div class=\"form_item_block\">" +
+                        "<label>Request Type:</label>\n" +
+                        "<select ng-model=\"RequestType\">" +
+                        "<option value=\"-G\">GET</option>" +
+                        "<option value=\"-d\">POST</option>" +
+                        "</select>" +
+                        "</div>" +
+
+                        "<div class=\"form_item_block\">" +
+                        "<label>Additional Options</label>\n" +
+                        "<input type=\"text\" ng-model=\"AdditionalOptions\"></input>" +
+                        "</div>";
             }
         };
         return taskView;
     }
 
     @Override
-    public ValidationResult validate(TaskConfig taskConfig) {
-        return new ValidationResult();
+    public ValidationResult validate(TaskConfig configuration) {
+        ValidationResult validationResult = new ValidationResult();
+        if (configuration.getValue(URL_PROPERTY) == null || configuration.getValue(URL_PROPERTY).trim().isEmpty()) {
+            validationResult.addError(new ValidationError(URL_PROPERTY, "URL cannot be empty"));
+        }
+        return validationResult;
     }
-
 }

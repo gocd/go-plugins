@@ -20,6 +20,8 @@ import com.thoughtworks.go.plugin.api.response.execution.ExecutionResult;
 import com.thoughtworks.go.plugin.api.task.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CurlTaskExecutor implements TaskExecutor {
 
@@ -27,16 +29,15 @@ public class CurlTaskExecutor implements TaskExecutor {
 
     @Override
     public ExecutionResult execute(TaskConfig config, TaskExecutionContext taskEnvironment) {
-        String value = config.getValue(CurlTask.URL_PROPERTY);
         try {
-            return runCommand(taskEnvironment, value);
+            return runCommand(taskEnvironment, config);
         } catch (Exception e) {
-            return ExecutionResult.failure("Failed to download file from URL: " + value, e);
+            return ExecutionResult.failure("Failed to download file from URL: " + config.getValue(CurlTask.URL_PROPERTY), e);
         }
     }
 
-    private ExecutionResult runCommand(TaskExecutionContext taskContext, String url) throws IOException, InterruptedException {
-        ProcessBuilder curl = new ProcessBuilder("curl", "-o",taskContext.workingDir()+"/"+CURLED_FILE, url);
+    private ExecutionResult runCommand(TaskExecutionContext taskContext, TaskConfig taskConfig) throws IOException, InterruptedException {
+        ProcessBuilder curl = createCurlCommandWithOptions(taskContext, taskConfig);
 
         Console console = taskContext.console();
         console.printLine("Launching command: " + curl.command());
@@ -57,5 +58,31 @@ public class CurlTaskExecutor implements TaskExecutor {
         }
 
         return ExecutionResult.success("Downloaded file: " + CURLED_FILE);
+    }
+
+    ProcessBuilder createCurlCommandWithOptions(TaskExecutionContext taskContext, TaskConfig taskConfig) {
+        String requestType = taskConfig.getValue(CurlTask.REQUEST_PROPERTY);
+        String secureConnection = taskConfig.getValue(CurlTask.SECURE_CONNECTION_PROPERTY);
+        String additionalOptions = taskConfig.getValue(CurlTask.ADDITIONAL_OPTIONS);
+        String destinationFilePath = taskContext.workingDir() + "/" + CURLED_FILE;
+        String url = taskConfig.getValue(CurlTask.URL_PROPERTY);
+
+        List<String> command = new ArrayList<String>();
+        command.add("curl");
+        command.add(requestType);
+        if (secureConnection.equals("no")) {
+            command.add("--insecure");
+        }
+        if (additionalOptions != null && !additionalOptions.trim().isEmpty()) {
+            String parts[] = additionalOptions.split("\\s+");
+            for (String part : parts) {
+                command.add(part);
+            }
+        }
+        command.add("-o");
+        command.add(destinationFilePath);
+        command.add(url);
+
+        return new ProcessBuilder(command);
     }
 }
