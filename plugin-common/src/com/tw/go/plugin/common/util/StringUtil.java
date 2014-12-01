@@ -14,24 +14,14 @@
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
 
-package com.tw.go.plugin.util;
+package com.tw.go.plugin.common.util;
 
-import java.util.Collection;
-import java.util.Iterator;
-
-public class ListUtil {
-    public static String join(Collection c) {
-        return join(c, ", ");
+public class StringUtil {
+    public static boolean isBlank(String string) {
+        return string == null || string.trim().isEmpty();
     }
 
-    public static String join(Collection c, String join) {
-        StringBuffer sb = new StringBuffer();
-        for (Iterator<Object> iterator = c.iterator(); iterator.hasNext(); ) {
-            sb.append(iterator.next());
-            if (iterator.hasNext()) {
-                sb.append(join);
-            }
-        }
-        return sb.toString();
+    public static Boolean isNotBlank(String string) {
+        return !isBlank(string);
     }
 }

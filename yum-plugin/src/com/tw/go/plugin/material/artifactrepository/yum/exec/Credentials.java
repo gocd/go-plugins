@@ -18,7 +18,7 @@ package com.tw.go.plugin.material.artifactrepository.yum.exec;
 
 import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
-import com.tw.go.plugin.util.StringUtil;
+import com.tw.go.plugin.common.util.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

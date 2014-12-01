@@ -18,18 +18,21 @@ package com.tw.go.plugin.material.artifactrepository.yum.exec.config;
 
 import com.thoughtworks.go.plugin.api.config.Configuration;
 import com.thoughtworks.go.plugin.api.config.Property;
-import static com.thoughtworks.go.plugin.api.config.Property.*;
-import com.thoughtworks.go.plugin.api.material.packagerepository.*;
+import com.thoughtworks.go.plugin.api.material.packagerepository.PackageConfiguration;
+import com.thoughtworks.go.plugin.api.material.packagerepository.PackageMaterialConfiguration;
+import com.thoughtworks.go.plugin.api.material.packagerepository.PackageMaterialProperty;
+import com.thoughtworks.go.plugin.api.material.packagerepository.RepositoryConfiguration;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
+import com.tw.go.plugin.common.util.ListUtil;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.YumRepositoryPoller;
-import com.tw.go.plugin.util.ListUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.thoughtworks.go.plugin.api.config.Property.*;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class YumRepositoryConfiguration implements PackageMaterialConfiguration {

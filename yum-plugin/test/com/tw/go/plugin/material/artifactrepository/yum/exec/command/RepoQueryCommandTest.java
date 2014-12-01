@@ -20,7 +20,7 @@ import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision
 import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoqueryCacheCleaner;
-import com.tw.go.plugin.util.StringUtil;
+import com.tw.go.plugin.common.util.StringUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

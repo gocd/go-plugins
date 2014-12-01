@@ -20,7 +20,7 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision;
 import com.thoughtworks.go.plugin.api.material.packagerepository.exceptions.InvalidPackageRevisionDataException;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
-import com.tw.go.plugin.util.ListUtil;
+import com.tw.go.plugin.common.util.ListUtil;
 
 import java.util.*;
 

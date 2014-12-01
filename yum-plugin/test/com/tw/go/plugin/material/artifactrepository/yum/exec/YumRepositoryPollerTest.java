@@ -21,7 +21,7 @@ import com.thoughtworks.go.plugin.api.material.packagerepository.PackageMaterial
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision;
 import com.thoughtworks.go.plugin.api.material.packagerepository.RepositoryConfiguration;
 import com.thoughtworks.go.plugin.api.response.Result;
-import com.tw.go.plugin.util.ReflectionUtil;
+import com.tw.go.plugin.common.util.ReflectionUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

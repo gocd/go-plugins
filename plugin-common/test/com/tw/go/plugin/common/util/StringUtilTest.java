@@ -14,7 +14,7 @@
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
 
-package com.tw.go.plugin.util;
+package com.tw.go.plugin.common.util;
 
 import org.junit.Test;
 
