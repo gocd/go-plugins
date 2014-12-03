@@ -13,36 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
+package com.tw.go.plugin.material.artifactrepository.yum.exec.message;
 
-package com.tw.go.plugin.material.artifactrepository.yum.exec.command;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
+import java.util.Map;
 
-import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
+public class LatestPackageRevisionMessage {
 
-public class RepoQueryParams {
-    private final String repoId;
-    private final String packageSpec;
-    private final RepoUrl repoUrl;
+    @Expose
+    @SerializedName("repository-configuration")
+    private Map<String, PackageMaterialProperty> repositoryConfiguration;
 
-    public RepoQueryParams(String repoId, RepoUrl repoUrl, String packageSpec) {
-        this.repoId = repoId;
-        this.packageSpec = packageSpec;
-        this.repoUrl = repoUrl;
+    @Expose
+    @SerializedName("package-configuration")
+    private Map<String, PackageMaterialProperty> packageConfiguration;
+
+    public PackageMaterialProperties getRepositoryConfiguration() {
+        return new PackageMaterialProperties(repositoryConfiguration);
     }
 
-    public String getRepoId() {
-        return repoId;
-    }
-
-    public String getPackageSpec() {
-        return packageSpec;
-    }
-
-    public String getRepoFromId() {
-        return repoId + "," + repoUrl.getUrlWithBasicAuth();
-    }
-
-    public String getRepoUrl() {
-        return repoUrl.forDisplay();
+    public PackageMaterialProperties getPackageConfiguration() {
+        return new PackageMaterialProperties(packageConfiguration);
     }
 }

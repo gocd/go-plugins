@@ -16,12 +16,11 @@
 
 package com.tw.go.plugin.material.artifactrepository.yum.exec;
 
-import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
-import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationError;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationResultMessage;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,35 +30,33 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.internal.matchers.StringContains.containsString;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class RepoUrlTest {
     @Test
     public void shouldCorrectlyCheckIfRepositoryConfigurationValid() {
-        assertRepositoryUrlValidation("", null, null, asList(new ValidationError(REPO_URL, "Repository url is empty")), false);
-        assertRepositoryUrlValidation(null, null, null, asList(new ValidationError(REPO_URL, "Repository url is empty")), false);
-        assertRepositoryUrlValidation("  ", null, null, asList(new ValidationError(REPO_URL, "Repository url is empty")), false);
-        assertRepositoryUrlValidation("h://localhost", null, null, asList(new ValidationError(REPO_URL, "Invalid URL : h://localhost")), false);
-        assertRepositoryUrlValidation("ftp:///foo.bar", null, null, asList(new ValidationError(REPO_URL, "Invalid URL: Only 'file', 'http' and 'https' protocols are supported.")), false);
-        assertRepositoryUrlValidation("incorrectUrl", null, null, asList(new ValidationError(REPO_URL, "Invalid URL : incorrectUrl")), false);
-        assertRepositoryUrlValidation("http://user:password@localhost", null, null, asList(new ValidationError(REPO_URL, "User info should not be provided as part of the URL. Please provide credentials using USERNAME and PASSWORD configuration keys.")), false);
-        assertRepositoryUrlValidation("http://correct.com/url", null, null, new ArrayList<ValidationError>(), true);
-        assertRepositoryUrlValidation("file:///foo.bar", null, null, new ArrayList<ValidationError>(), true);
-        assertRepositoryUrlValidation("file:///foo.bar", "user", "password", asList(new ValidationError(REPO_URL, "File protocol does not support username and/or password.")), false);
+        assertRepositoryUrlValidation("", null, null, asList(new ValidationError(REPO_URL, "Repository url is empty")), true);
+        assertRepositoryUrlValidation(null, null, null, asList(new ValidationError(REPO_URL, "Repository url is empty")), true);
+        assertRepositoryUrlValidation("  ", null, null, asList(new ValidationError(REPO_URL, "Repository url is empty")), true);
+        assertRepositoryUrlValidation("h://localhost", null, null, asList(new ValidationError(REPO_URL, "Invalid URL : h://localhost")), true);
+        assertRepositoryUrlValidation("ftp:///foo.bar", null, null, asList(new ValidationError(REPO_URL, "Invalid URL: Only 'file', 'http' and 'https' protocols are supported.")), true);
+        assertRepositoryUrlValidation("incorrectUrl", null, null, asList(new ValidationError(REPO_URL, "Invalid URL : incorrectUrl")), true);
+        assertRepositoryUrlValidation("http://user:password@localhost", null, null, asList(new ValidationError(REPO_URL, "User info should not be provided as part of the URL. Please provide credentials using USERNAME and PASSWORD configuration keys.")), true);
+        assertRepositoryUrlValidation("http://correct.com/url", null, null, new ArrayList<ValidationError>(), false);
+        assertRepositoryUrlValidation("file:///foo.bar", null, null, new ArrayList<ValidationError>(), false);
+        assertRepositoryUrlValidation("file:///foo.bar", "user", "password", asList(new ValidationError(REPO_URL, "File protocol does not support username and/or password.")), true);
     }
 
     @Test
     public void shouldThrowUpWhenFileProtocolAndCredentialsAreUsed() throws Exception {
         RepoUrl repoUrl = new RepoUrl("file://foo.bar", null, "password");
-        ValidationResult errors = new ValidationResult();
+        ValidationResultMessage errors = new ValidationResultMessage();
 
         repoUrl.validate(errors);
 
-        assertThat(errors.isSuccessful(), is(false));
-        assertThat(errors.getErrors().size(), is(1));
-        assertThat(errors.getErrors().get(0).getMessage(), is("File protocol does not support username and/or password."));
+        assertThat(errors.failure(), is(true));
+        assertThat(errors.getValidationErrors().size(), is(1));
+        assertThat(errors.getValidationErrors().get(0).getMessage(), is("File protocol does not support username and/or password."));
     }
 
     @Test
@@ -147,11 +144,11 @@ public class RepoUrlTest {
         assertThat(new RepoUrl("file:///foo/bar//", null, null).getRepoMetadataUrl(), is("file:///foo/bar/repodata/repomd.xml"));
     }
 
-    private void assertRepositoryUrlValidation(String url, String username, String password, List<ValidationError> expectedErrors, boolean isSuccessful) {
-        ValidationResult errors = new ValidationResult();
+    private void assertRepositoryUrlValidation(String url, String username, String password, List<ValidationError> expectedErrors, boolean isFailure) {
+        ValidationResultMessage errors = new ValidationResultMessage();
         new RepoUrl(url, username, password).validate(errors);
-        assertThat(errors.isSuccessful(), is(isSuccessful));
-        assertThat(errors.getErrors().size(), is(expectedErrors.size()));
-        assertThat(errors.getErrors().containsAll(expectedErrors), is(true));
+        assertThat(errors.failure(), is(isFailure));
+        assertThat(errors.getValidationErrors().size(), is(expectedErrors.size()));
+        assertThat(errors.getValidationErrors().containsAll(expectedErrors), is(true));
     }
 }

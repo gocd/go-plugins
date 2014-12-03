@@ -16,9 +16,9 @@
 
 package com.tw.go.plugin.material.artifactrepository.yum.exec;
 
-import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
-import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
-import com.tw.go.plugin.util.StringUtil;
+import com.tw.go.plugin.common.util.StringUtil;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationError;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationResultMessage;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -44,31 +44,32 @@ public class RepoUrl {
         this.credentials = new Credentials(user, password);
     }
 
-    public void validate(ValidationResult validationResult) {
+    public void validate(ValidationResultMessage validationResultMessage) {
         try {
             if (StringUtil.isBlank(url)) {
-                validationResult.addError(new ValidationError(Constants.REPO_URL, "Repository url is empty"));
+                validationResultMessage.addError(ValidationError.create(Constants.REPO_URL, "Repository url is empty"));
                 return;
             }
             URL validatedUrl = new URL(this.url);
             if (!map.containsKey(validatedUrl.getProtocol())) {
-                validationResult.addError(new ValidationError(Constants.REPO_URL, "Invalid URL: Only 'file', 'http' and 'https' protocols are supported."));
+                validationResultMessage.addError(ValidationError.create(Constants.REPO_URL, "Invalid URL: Only 'file', 'http' and 'https' protocols are supported."));
             }
 
             if (StringUtil.isNotBlank(validatedUrl.getUserInfo())) {
-                validationResult.addError(new ValidationError(Constants.REPO_URL, "User info should not be provided as part of the URL. Please provide credentials using USERNAME and PASSWORD configuration keys."));
+                validationResultMessage.addError(ValidationError.create(Constants.REPO_URL, "User info should not be provided as part of the URL. Please provide credentials using USERNAME and PASSWORD configuration keys."));
             }
             if (credentials.isPresent()) {
-                if(validatedUrl.getProtocol().equals("file")){
-                    validationResult.addError(new ValidationError(Constants.REPO_URL, "File protocol does not support username and/or password."));
+                if (validatedUrl.getProtocol().equals("file")) {
+                    validationResultMessage.addError(ValidationError.create(Constants.REPO_URL, "File protocol does not support username and/or password."));
                 } else {
-                    credentials.validate(validationResult);
+                    credentials.validate(validationResultMessage);
                 }
             }
         } catch (MalformedURLException e) {
-            validationResult.addError(new ValidationError(Constants.REPO_URL, "Invalid URL : " + url));
+            validationResultMessage.addError(ValidationError.create(Constants.REPO_URL, "Invalid URL : " + url));
         }
     }
+
 
     ConnectionChecker getChecker() {
         try {

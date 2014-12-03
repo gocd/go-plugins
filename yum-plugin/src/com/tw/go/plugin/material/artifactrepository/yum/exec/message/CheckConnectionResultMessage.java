@@ -13,12 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
-package com.tw.go.plugin.material.artifactrepository.yum.exec;
+package com.tw.go.plugin.material.artifactrepository.yum.exec.message;
 
-public class Constants {
-    public static final String REPO_URL = "REPO_URL";
-    public static final String USERNAME = "USERNAME";
-    public static final String PASSWORD = "PASSWORD";
-    public static final String PACKAGE_SPEC = "PACKAGE_SPEC";
-    public static String PACKAGE_LOCATION = "LOCATION";
+import com.google.gson.annotations.Expose;
+
+import java.util.List;
+
+public class CheckConnectionResultMessage {
+
+    public enum STATUS {SUCCESS, FAILURE}
+
+    @Expose
+    private STATUS status;
+
+    @Expose
+    private List<String> messages;
+
+    public CheckConnectionResultMessage(STATUS status, List<String> messages) {
+        this.status = status;
+        this.messages = messages;
+    }
+
+    public boolean success() {
+        return STATUS.SUCCESS.equals(status);
+    }
+
+    public List<String> getMessages() {
+        return messages;
+    }
 }

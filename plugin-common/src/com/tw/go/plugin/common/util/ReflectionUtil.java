@@ -14,7 +14,7 @@
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
 
-package com.tw.go.plugin.util;
+package com.tw.go.plugin.common.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -16,11 +16,11 @@
 
 package com.tw.go.plugin.material.artifactrepository.yum.exec.command;
 
-import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision;
+import com.tw.go.plugin.common.util.StringUtil;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoqueryCacheCleaner;
-import com.tw.go.plugin.util.StringUtil;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.PackageRevisionMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class RepoQueryCommandTest {
         long time = 5;
         stdOut.add(repoQueryOutput(time, "packager", "http://location", "http://jenkins.job", "ca.hostname"));
         when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
-        PackageRevision packageRevision = new RepoQueryCommand(processRunner, new RepoQueryParams(repoid, new RepoUrl(repourl, null, null), spec)).execute();
+        PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, new RepoQueryParams(repoid, new RepoUrl(repourl, null, null), spec)).execute();
 
         assertThat(packageRevision.getRevision(), is("name-version-release.arch"));
         assertThat(packageRevision.getTimestamp(), is(new Date(5000)));
@@ -82,7 +82,7 @@ public class RepoQueryCommandTest {
         stdOut.add(repoQueryOutput(time, "None", "NONE", "NOne", "none"));
 
         when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
-        PackageRevision packageRevision = new RepoQueryCommand(processRunner, new RepoQueryParams(repoid, new RepoUrl(repourl, null, null), spec)).execute();
+        PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, new RepoQueryParams(repoid, new RepoUrl(repourl, null, null), spec)).execute();
 
         assertThat(packageRevision.getRevision(), is("name-version-release.arch"));
         assertThat(packageRevision.getTimestamp(), is(new Date(5000)));
@@ -141,7 +141,7 @@ public class RepoQueryCommandTest {
         stdOut.add(repoQueryOutput(time, "packager", "http://location", "http://jenkins.job", "ca.hostname"));
         when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
         RepoQueryParams params = new RepoQueryParams(repoid, new RepoUrl(repourl, "username", "!4321abcd"), spec);
-        PackageRevision packageRevision = new RepoQueryCommand(processRunner, params).execute();
+        PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, params).execute();
         assertThat(packageRevision, is(not(nullValue())));
         verify(processRunner).execute(expectedCommand, envMapWithDefaultHome());
     }
@@ -161,8 +161,8 @@ public class RepoQueryCommandTest {
 
         when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
         RepoQueryParams params = new RepoQueryParams(repoid, new RepoUrl(repourl, "username", "!4321abcd"), spec);
-        PackageRevision packageRevision = new RepoQueryCommand(processRunner, params).execute();
-        assertThat(packageRevision.getDataFor(Constants.PACKAGE_LOCATION), is("http://foo.com/bar"));
+        PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, params).execute();
+        assertThat(packageRevision.getData().get(Constants.PACKAGE_LOCATION), is("http://foo.com/bar"));
         verify(processRunner).execute(expectedCommand, envMapWithDefaultHome());
     }
 

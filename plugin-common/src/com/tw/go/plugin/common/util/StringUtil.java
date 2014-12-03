@@ -14,7 +14,7 @@
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
 
-package com.tw.go.plugin.util;
+package com.tw.go.plugin.common.util;
 
 public class StringUtil {
     public static boolean isBlank(String string) {

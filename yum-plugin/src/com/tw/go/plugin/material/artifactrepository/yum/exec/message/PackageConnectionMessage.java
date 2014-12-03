@@ -13,32 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
+package com.tw.go.plugin.material.artifactrepository.yum.exec.message;
 
-package com.tw.go.plugin.util;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-import org.junit.Test;
+import java.util.Map;
 
-import java.util.ArrayList;
+public class PackageConnectionMessage {
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+    @Expose
+    @SerializedName("repository-configuration")
+    private Map<String,PackageMaterialProperty> repositoryConfiguration;
 
-public class ListUtilTest {
-    @Test
-    public void shouldJoinAListUsingComma(){
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("a");
-        list.add("b");
-        list.add("c");
-        assertThat(ListUtil.join(list), is("a, b, c"));
+    @Expose
+    @SerializedName("package-configuration")
+    private Map<String,PackageMaterialProperty> packageConfiguration;
+
+    public PackageMaterialProperties getRepositoryConfiguration() {
+        return new PackageMaterialProperties(repositoryConfiguration);
     }
 
-    @Test
-    public void shouldJoinAListUsingSpecifiedSeparator(){
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("a");
-        list.add("b");
-        list.add("c");
-        assertThat(ListUtil.join(list, " "), is("a b c"));
+    public PackageMaterialProperties getPackageConfiguration() {
+        return new PackageMaterialProperties(packageConfiguration);
     }
 }

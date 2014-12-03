@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
+package com.tw.go.plugin.common.util;
 
-package com.tw.go.plugin.util;
+import com.google.gson.GsonBuilder;
 
-import java.util.Collection;
-import java.util.Iterator;
+public class JsonUtil {
 
-public class ListUtil {
-    public static String join(Collection c) {
-        return join(c, ", ");
+    public static String toJsonString(Object object) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return gsonBuilder.create().toJson(object);
     }
 
-    public static String join(Collection c, String join) {
-        StringBuffer sb = new StringBuffer();
-        for (Iterator<Object> iterator = c.iterator(); iterator.hasNext(); ) {
-            sb.append(iterator.next());
-            if (iterator.hasNext()) {
-                sb.append(join);
-            }
-        }
-        return sb.toString();
+    public static <T> T fromJsonString(String json, Class<T> type) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return gsonBuilder.create().fromJson(json, type);
     }
 }

@@ -14,27 +14,31 @@
  * limitations under the License.
  *************************GO-LICENSE-END***********************************/
 
-package com.tw.go.plugin.util;
+package com.tw.go.plugin.common.util;
 
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class StringUtilTest {
+public class ListUtilTest {
     @Test
-    public void shouldCheckAStringForBlank() {
-        assertThat(StringUtil.isBlank(""), is(true));
-        assertThat(StringUtil.isBlank("   "), is(true));
-        assertThat(StringUtil.isBlank(null), is(true));
-        assertThat(StringUtil.isBlank(" a "), is(false));
+    public void shouldJoinAListUsingComma(){
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        assertThat(ListUtil.join(list), is("a, b, c"));
     }
 
     @Test
-    public void shouldCheckIfAStringIsNotBlank() throws Exception {
-        assertThat(StringUtil.isNotBlank(""), is(false));
-        assertThat(StringUtil.isNotBlank("   "), is(false));
-        assertThat(StringUtil.isNotBlank(null), is(false));
-        assertThat(StringUtil.isNotBlank(" a "), is(true));
+    public void shouldJoinAListUsingSpecifiedSeparator(){
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        assertThat(ListUtil.join(list, " "), is("a b c"));
     }
 }

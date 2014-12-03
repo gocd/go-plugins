@@ -43,6 +43,7 @@
     </dependencies>
 
     <modules>
+        <module>plugin-common</module>
         <module>plugins-for-tests/invalid-xml-plugin</module>
         <module>plugins-for-tests/plugin-with-invalid-id</module>
         <module>plugins-for-tests/plugin-with-multiple-load-methods</module>
