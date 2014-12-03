@@ -17,10 +17,9 @@
 package com.tw.go.plugin.material.artifactrepository.yum.exec.command;
 
 import com.thoughtworks.go.plugin.api.logging.Logger;
-import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision;
-import com.thoughtworks.go.plugin.api.material.packagerepository.exceptions.InvalidPackageRevisionDataException;
-import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
 import com.tw.go.plugin.common.util.ListUtil;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.PackageRevisionMessage;
 
 import java.util.*;
 
@@ -31,7 +30,7 @@ public class RepoQueryCommand {
     static final String DELIMITER = "<=>";
     private final ProcessRunner processRunner;
     private static Logger LOGGER = Logger.getLoggerFor(RepoQueryCommand.class);
-    private final RepoQueryParams params;
+    private final com.tw.go.plugin.material.artifactrepository.yum.exec.command.RepoQueryParams params;
 
     public RepoQueryCommand(RepoQueryParams params) {
         this(new ProcessRunner(), params);
@@ -43,7 +42,7 @@ public class RepoQueryCommand {
         this.params = params;
     }
 
-    public PackageRevision execute() {
+    public PackageRevisionMessage execute() {
         String[] command = {"repoquery",
                 "--repofrompath=" + params.getRepoFromId(),
                 "--repoid=" + params.getRepoId(),
@@ -86,7 +85,7 @@ public class RepoQueryCommand {
         return processOutput != null && processOutput.isZeroReturnCode() && processOutput.hasOutput() && !processOutput.hasErrors();
     }
 
-    private PackageRevision parseOutput(ProcessOutput processOutput) {
+    private PackageRevisionMessage parseOutput(ProcessOutput processOutput) {
         if (processOutput.getStdOut().size() > 1) {
             List<String> results = new ArrayList<String>();
             List<String> stdOut = processOutput.getStdOut();
@@ -115,10 +114,10 @@ public class RepoQueryCommand {
         String packageName = format("%s-%s-%s.%s", name, version, release, arch);
         //converting from epoch time
         long timeInMillis = parseLong(buildTime) * 1000;
-        PackageRevision packageRevision = new PackageRevision(packageName, new Date(timeInMillis), packager, buildHost != null ? "Built on " + buildHost : null, trackbackUrl);
+        PackageRevisionMessage packageRevision = new PackageRevisionMessage(packageName, new Date(timeInMillis), packager, buildHost != null ? "Built on " + buildHost : null, trackbackUrl);
         try {
             packageRevision.addData(Constants.PACKAGE_LOCATION, location);
-        } catch (InvalidPackageRevisionDataException e) {
+        } catch (RuntimeException e) {
             LOGGER.warn("Could not add data key. Reason : " + e.getMessage());
         }
         return packageRevision;

@@ -16,8 +16,8 @@
 
 package com.tw.go.plugin.material.artifactrepository.yum.exec;
 
-import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
-import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationError;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationResultMessage;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -39,14 +39,14 @@ public class CredentialsTest {
 
     @Test
     public void shouldFailValidationIfOnlyPasswordProvided() throws Exception {
-        ValidationResult validationResult = new ValidationResult();
+        ValidationResultMessage validationResult = new ValidationResultMessage();
         new Credentials(null, "password").validate(validationResult);
-        assertThat(validationResult.isSuccessful(), is(false));
-        assertThat(validationResult.getErrors(), hasItem(new ValidationError(Constants.USERNAME, "Both Username and password are required.")));
+        assertThat(validationResult.failure(), is(true));
+        assertThat(validationResult.getValidationErrors(), hasItem(new ValidationError(Constants.USERNAME, "Both Username and password are required.")));
 
-        validationResult = new ValidationResult();
+        validationResult = new ValidationResultMessage();
         new Credentials("user", "").validate(validationResult);
-        assertThat(validationResult.isSuccessful(), is(false));
-        assertThat(validationResult.getErrors(), hasItem(new ValidationError(Constants.PASSWORD, "Both Username and password are required.")));
+        assertThat(validationResult.failure(), is(true));
+        assertThat(validationResult.getValidationErrors(), hasItem(new ValidationError(Constants.PASSWORD, "Both Username and password are required.")));
     }
 }

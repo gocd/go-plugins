@@ -16,9 +16,9 @@
 
 package com.tw.go.plugin.material.artifactrepository.yum.exec;
 
-import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
-import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
 import com.tw.go.plugin.common.util.StringUtil;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationError;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.message.ValidationResultMessage;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -45,11 +45,11 @@ public class Credentials {
         return String.format("%s:%s", user, URLEncoder.encode(password, "UTF-8"));
     }
 
-    public void validate(ValidationResult validationResult) {
+    public void validate(ValidationResultMessage validationResultMessage) {
         if (StringUtil.isBlank(user) && StringUtil.isNotBlank(password))
-            validationResult.addError(new ValidationError(Constants.USERNAME, "Both Username and password are required."));
+            validationResultMessage.addError(ValidationError.create(Constants.USERNAME, "Both Username and password are required."));
         if (StringUtil.isNotBlank(user) && StringUtil.isBlank(password))
-            validationResult.addError(new ValidationError(Constants.PASSWORD, "Both Username and password are required."));
+            validationResultMessage.addError(ValidationError.create(Constants.PASSWORD, "Both Username and password are required."));
     }
 
     public boolean isComplete() {

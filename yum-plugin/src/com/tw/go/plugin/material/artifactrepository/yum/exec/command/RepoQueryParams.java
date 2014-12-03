@@ -16,6 +16,7 @@
 
 package com.tw.go.plugin.material.artifactrepository.yum.exec.command;
 
+
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
 
 public class RepoQueryParams {
