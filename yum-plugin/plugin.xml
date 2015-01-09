@@ -19,7 +19,7 @@
     <about>
         <name>Yum plugin</name>
         <version>2.0.0</version>
-        <target-go-version>15.1.0</target-go-version>
+        <target-go-version>14.4.0</target-go-version>
         <description>Plugin that polls a yum repository</description>
         <vendor>
             <name>ThoughtWorks Go Team</name>
