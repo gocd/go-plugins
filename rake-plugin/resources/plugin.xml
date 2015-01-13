@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="rake" version="1">
+    <about>
+        <name>Rake</name>
+        <version>1.0</version>
+        <target-go-version>15.1.0</target-go-version>
+        <description>ThoughtWorks Go plugin to run Rake</description>
+        <vendor>
+            <name>ThoughtWorks Go Team</name>
+            <url>www.thoughtworks.com</url>
+        </vendor>
+    </about>
+</go-plugin>

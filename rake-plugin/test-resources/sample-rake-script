@@ -1,0 +1,4 @@
+task :print_environment_variables do |t, args|
+  puts "ENV_VAR_1: #{ENV['ENV_VAR_1']}"
+  puts "ENV_VAR_2: #{ENV['ENV_VAR_2']}"
+end
