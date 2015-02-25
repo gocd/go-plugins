@@ -48,6 +48,7 @@
         <module>plugins-for-tests/plugin-with-invalid-id</module>
         <module>plugins-for-tests/plugin-with-multiple-load-methods</module>
         <module>plugins-for-tests/test-curl-plugin</module>
+        <module>plugins-for-tests/test-notification-plugin</module>
         <module>plugins-for-tests/test-donothing-plugin</module>
         <module>plugins-for-tests/test-valid-innerclass-plugin</module>
         <module>plugins-for-tests/test-valid-staticclass-plugin</module>
