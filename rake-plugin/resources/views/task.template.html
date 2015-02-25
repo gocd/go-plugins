@@ -1,0 +1,17 @@
+<div class="form_item_block">
+    <label>Build File:</label>
+    <input type="text" ng-model="build_file" />
+    <span class="form_error" ng-show="GOINPUTNAME[build_file].$error.server">{{ GOINPUTNAME[build_file].$error.server }}</span>
+</div>
+
+<div class="form_item_block">
+    <label>Target:</label>
+    <input type="text" ng-model="target" />
+    <span class="form_error" ng-show="GOINPUTNAME[target].$error.server">{{ GOINPUTNAME[target].$error.server }}</span>
+</div>
+
+<div class="form_item_block">
+    <label>Working Directory:</label>
+    <input type="text" ng-model="working_directory" />
+    <span class="form_error" ng-show="GOINPUTNAME[working_directory].$error.server">{{ GOINPUTNAME[working_directory].$error.server }}</span>
+</div>

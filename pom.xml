@@ -55,6 +55,7 @@
         <module>plugins-for-tests/test-valid-subclass-plugin</module>
         <module>plugins-for-tests/test-with-some-plugin-xml-values</module>
         <module>yum-plugin</module>
+        <module>rake-plugin</module>
     </modules>
 
     <build>
@@ -65,6 +66,9 @@
                 <includes>
                     <include>plugin.xml</include>
                 </includes>
+            </resource>
+            <resource>
+                <directory>resources</directory>
             </resource>
         </resources>
         <testSourceDirectory>test</testSourceDirectory>
