@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="git" version="1">
+    <about>
+        <name>Git plugin</name>
+        <version>0.1</version>
+        <target-go-version>15.1.0</target-go-version>
+        <description>Plugin that polls a Git repository</description>
+        <vendor>
+            <name>Srinivas</name>
+            <url>https://github.com/srinivasupadhya/git-poller</url>
+        </vendor>
+    </about>
+</go-plugin>
