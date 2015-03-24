@@ -87,7 +87,7 @@ public class GitPluginImpl implements GoPlugin {
         response.put("url", createField("URL", null, true, true, false, "0"));
         response.put("username", createField("Username", null, false, false, false, "1"));
         response.put("password", createField("Password", null, false, false, true, "2"));
-        response.put("branch", createField("Branch", null, false, false, false, "3"));
+        response.put("branch", createField("Branch", null, true, false, false, "3"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
