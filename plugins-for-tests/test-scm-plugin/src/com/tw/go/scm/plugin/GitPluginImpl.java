@@ -262,6 +262,7 @@ public class GitPluginImpl implements GoPlugin {
         Map<String, Object> response = new HashMap<String, Object>();
         response.put("revision", revision.getRevision());
         response.put("timestamp", new SimpleDateFormat(DATE_PATTERN).format(revision.getTimestamp()));
+        response.put("user", revision.getUser());
         response.put("revisionComment", revision.getComment());
         List<Map> modifiedFilesMapList = new ArrayList<Map>();
         if (!ListUtil.isEmpty(revision.getModifiedFiles())) {
