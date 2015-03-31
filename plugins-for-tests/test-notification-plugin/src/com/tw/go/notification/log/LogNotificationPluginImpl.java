@@ -53,15 +53,12 @@ public class LogNotificationPluginImpl implements GoPlugin {
     }
 
     private GoPluginApiResponse handleStageNotification(GoPluginApiRequest goPluginApiRequest) {
-        Map<String, Object> dataMap = getMapFor(goPluginApiRequest);
 
         int responseCode = SUCCESS_RESPONSE_CODE;
         Map<String, Object> response = new HashMap<String, Object>();
         List<String> messages = new ArrayList<String>();
         try {
-            String message = String.format("[%s|%s|%s|%s|%s|%s|%s|%s]", dataMap.get("pipeline-name"),
-                    ((Double) dataMap.get("pipeline-counter")).intValue(), dataMap.get("stage-name"), dataMap.get("stage-counter"),
-                    dataMap.get("stage-state"), dataMap.get("stage-result"), dataMap.get("create-time"), dataMap.get("last-transition-time"));
+            String message = getMessage(goPluginApiRequest);
 
             LOGGER.warn(message);
 
@@ -75,6 +72,20 @@ public class LogNotificationPluginImpl implements GoPlugin {
 
         response.put("messages", messages);
         return renderJSON(responseCode, response);
+    }
+
+    String getMessage(GoPluginApiRequest goPluginApiRequest) {
+        Map<String, Object> dataMap = getMapFor(goPluginApiRequest);
+        Map pipelineMap = (Map) dataMap.get("pipeline");
+        Map stageMap = (Map) pipelineMap.get("stage");
+        String pipelineName = (String) pipelineMap.get("name");
+        String pipelineCounter = (String) pipelineMap.get("counter");
+        String stageName = (String) stageMap.get("name");
+        String stageCounter = (String) stageMap.get("counter");
+        String stageState = (String) stageMap.get("state");
+        String stageResult = (String) stageMap.get("result");
+
+        return String.format("[%s|%s|%s|%s|%s|%s]", pipelineName, pipelineCounter, stageName, stageCounter, stageState, stageResult);
     }
 
     private Map<String, Object> getMapFor(GoPluginApiRequest goPluginApiRequest) {
