@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="sample.authenticator" version="1">
+    <about>
+        <name>Sample Authentication plugin</name>
+        <version>0.1</version>
+        <target-go-version>15.1.0</target-go-version>
+        <description>Plugin to do authentications</description>
+        <vendor>
+            <name>ThoughtWorks</name>
+            <url>https://github.com/gocd/go-plugins</url>
+        </vendor>
+    </about>
+</go-plugin>
