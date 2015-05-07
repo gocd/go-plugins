@@ -6,6 +6,7 @@ import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
+import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.FileUtils;
@@ -59,7 +60,7 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
 
     @Override
     public GoPluginIdentifier pluginIdentifier() {
-        return new GoPluginIdentifier(EXTENSION_NAME, goSupportedVersions);
+        return getGoPluginIdentifier();
     }
 
     private GoPluginApiResponse handleSetupLoginWebRequest(GoPluginApiRequest goPluginApiRequest) {
@@ -96,11 +97,13 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
             String userId = profile.getValidatedId();
             String displayName = profile.getDisplayName();
             String fullName = profile.getFullName();
-            String email = profile.getEmail();
-            email = email == null ? email : email.toLowerCase().trim();
-            LOGGER.error(userId + " - " + displayName + " - " + fullName + " - " + email);
+            String firstName = isEmpty(fullName) ? displayName : fullName.split(" ")[0];
+            String lastName = isEmpty(fullName) || fullName.split(" ").length == 1 ? "" : fullName.split(" ")[1];
+            String emailId = profile.getEmail();
+            emailId = emailId == null ? emailId : emailId.toLowerCase().trim();
+            LOGGER.error(userId + " - " + displayName + " - " + firstName + " - " + lastName + " - " + emailId);
 
-            // TODO: Tell Go Server user is authenticated & provide details (username, email etc.)
+            goApplicationAccessor.submit(createGoApiRequest("authenticate-user", userId, displayName, firstName, lastName, emailId));
 
             delete();
 
@@ -111,6 +114,10 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
             LOGGER.error("Error occurred while Github OAuth authenticate.", e);
             return renderResponse(INTERNAL_ERROR_RESPONSE_CODE, null, null);
         }
+    }
+
+    private boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 
     // TODO: this needs to be stored in session
@@ -147,6 +154,50 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
     // TODO: this needs to be dynamic (system property)
     private String getServerBaseURL() {
         return "http://" + "localhost:8153";
+    }
+
+    private GoApiRequest createGoApiRequest(final String api, final String userId, final String displayName, final String firstName, final String lastName, final String emailId) {
+        return new GoApiRequest() {
+            @Override
+            public String api() {
+                return api;
+            }
+
+            @Override
+            public String apiVersion() {
+                return null;
+            }
+
+            @Override
+            public GoPluginIdentifier pluginIdentifier() {
+                return getGoPluginIdentifier();
+            }
+
+            @Override
+            public Map<String, String> requestParameters() {
+                return null;
+            }
+
+            @Override
+            public Map<String, String> requestHeaders() {
+                return null;
+            }
+
+            @Override
+            public String requestBody() {
+                Map<String, String> userMap = new HashMap<String, String>();
+                userMap.put("id", userId);
+                userMap.put("username", displayName);
+                userMap.put("first-name", firstName);
+                userMap.put("last-name", lastName);
+                userMap.put("email-id", emailId);
+                return new Gson().toJson(userMap);
+            }
+        };
+    }
+
+    private GoPluginIdentifier getGoPluginIdentifier() {
+        return new GoPluginIdentifier(EXTENSION_NAME, goSupportedVersions);
     }
 
     private GoPluginApiResponse renderResponse(final int responseCode, final Map<String, String> responseHeaders, final String responseBody) {
