@@ -1,5 +1,6 @@
 package com.tw.go.notification.log;
 
+import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
@@ -41,6 +42,12 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
     @Override
     public GoPluginApiResponse handle(GoPluginApiRequest goPluginApiRequest) {
         String requestName = goPluginApiRequest.requestName();
+        if (requestName.equals("plugin-configuration")) {
+            Map<String, Object> configuration = new HashMap<String, Object>();
+            configuration.put("display-name", "Github");
+            configuration.put("supports-user-search", false);
+            return renderResponse(SUCCESS_RESPONSE_CODE, null, new Gson().toJson(configuration));
+        }
         if (requestName.equals("index")) {
             return handleSetupLoginWebRequest(goPluginApiRequest);
         }
