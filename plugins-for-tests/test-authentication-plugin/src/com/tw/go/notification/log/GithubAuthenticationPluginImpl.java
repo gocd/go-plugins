@@ -8,12 +8,16 @@ import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.brickred.socialauth.*;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -131,7 +135,10 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
             emailId = emailId == null ? emailId : emailId.toLowerCase().trim();
             LOGGER.error(userId + " - " + displayName + " - " + firstName + " - " + lastName + " - " + emailId);
 
-            goApplicationAccessor.submit(createGoApiRequest("authenticate-user", userId, displayName, firstName, lastName, emailId));
+            final String userJSON = getUserJSON(userId, displayName, firstName, lastName, emailId);
+            GoApiRequest authenticateUserRequest = createGoApiRequest("authenticate-user", userJSON);
+            GoApiResponse authenticateUserResponse = goApplicationAccessor.submit(authenticateUserRequest);
+            // handle error
 
             delete();
 
@@ -148,31 +155,60 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
         return str == null || str.trim().isEmpty();
     }
 
-    // TODO: this needs to be stored in session
     private void store(SocialAuthManager socialAuthManager) {
+        Map<String, Object> requestMap = new HashMap<String, Object>();
+        requestMap.put("plugin-id", "github.authenticator");
+        Map<String, Object> sessionData = new HashMap<String, Object>();
+        String socialAuthManagerStr = serializeObject(socialAuthManager);
+        sessionData.put("social-auth-manager", socialAuthManagerStr);
+        requestMap.put("session-data", sessionData);
+        GoApiRequest goApiRequest = createGoApiRequest("store-in-session", new Gson().toJson(requestMap));
+        GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
+        // handle error
+    }
+
+    private String serializeObject(SocialAuthManager socialAuthManager) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("/tmp/social-auth");
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(socialAuthManager);
+            objectOutputStream.flush();
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            return new String(Base64.encodeBase64(bytes));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    // TODO: this needs to be read from session
     private SocialAuthManager read() {
+        Map<String, Object> requestMap = new HashMap<String, Object>();
+        requestMap.put("plugin-id", "github.authenticator");
+        GoApiRequest goApiRequest = createGoApiRequest("get-from-session", new Gson().toJson(requestMap));
+        GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
+        // handle error
+        String responseBody = response.responseBody();
+        Map<String, Object> sessionData = new Gson().fromJson(responseBody, Map.class);
+        String socialAuthManagerStr = (String) sessionData.get("social-auth-manager");
+        return deserializeObject(socialAuthManagerStr);
+    }
+
+    private SocialAuthManager deserializeObject(String socialAuthManagerStr) {
         try {
-            FileInputStream fileInputStream = new FileInputStream("/tmp/social-auth");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            byte bytes[] = Base64.decodeBase64(socialAuthManagerStr.getBytes());
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             return (SocialAuthManager) objectInputStream.readObject();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    // TODO: this needs to be deleted from session
     private void delete() {
-        FileUtils.deleteQuietly(new File("/tmp/social-auth"));
+        Map<String, Object> requestMap = new HashMap<String, Object>();
+        requestMap.put("plugin-id", "github.authenticator");
+        GoApiRequest goApiRequest = createGoApiRequest("remove-from-session", new Gson().toJson(requestMap));
+        GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
+        // handle error
     }
 
     private String getURL() {
@@ -192,7 +228,7 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
         }
     }
 
-    private GoApiRequest createGoApiRequest(final String api, final String userId, final String displayName, final String firstName, final String lastName, final String emailId) {
+    private GoApiRequest createGoApiRequest(final String api, final String responseBody) {
         return new GoApiRequest() {
             @Override
             public String api() {
@@ -221,7 +257,7 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
 
             @Override
             public String requestBody() {
-                return getUserJSON(userId, displayName, firstName, lastName, emailId);
+                return responseBody;
             }
         };
     }
