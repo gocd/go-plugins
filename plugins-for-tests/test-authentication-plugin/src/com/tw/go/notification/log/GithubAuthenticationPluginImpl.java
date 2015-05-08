@@ -10,19 +10,24 @@ import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.brickred.socialauth.*;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
 @Extension
 public class GithubAuthenticationPluginImpl implements GoPlugin {
     private static Logger LOGGER = Logger.getLoggerFor(GithubAuthenticationPluginImpl.class);
+
+    public static final String PLUGIN_CONFIGURATION = "plugin-configuration";
+    public static final String AUTHENTICATE_USER = "authenticate-user";
+    public static final String GET_USER_DETAILS = "get-user-details";
+    public static final String INDEX_WEB_REQUEST = "index";
+    public static final String AUTHENTICATE_WEB_REQUEST = "authenticate";
+    public static final String TEST_WEB_REQUEST = "test";
 
     public static final String GITHUB = "github";
 
@@ -43,17 +48,40 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
     @Override
     public GoPluginApiResponse handle(GoPluginApiRequest goPluginApiRequest) {
         String requestName = goPluginApiRequest.requestName();
-        if (requestName.equals("plugin-configuration")) {
+        if (requestName.equals(PLUGIN_CONFIGURATION)) {
             Map<String, Object> configuration = new HashMap<String, Object>();
             configuration.put("display-name", "Github");
+            configuration.put("supports-password-based-authentication", true);
             configuration.put("supports-user-search", false);
             return renderResponse(SUCCESS_RESPONSE_CODE, null, new Gson().toJson(configuration));
         }
-        if (requestName.equals("index")) {
+        if (requestName.equals(AUTHENTICATE_USER)) {
+            Map<String, Object> requestBodyMap = new Gson().fromJson(goPluginApiRequest.requestBody(), Map.class);
+            String username = (String) requestBodyMap.get("username");
+            String password = (String) requestBodyMap.get("password");
+            Map<String, Object> responseMap = new HashMap<String, Object>();
+            List<String> messages = new ArrayList<String>();
+            if (username.equals("test") && password.equals("test")) {
+                responseMap.put("status", "success");
+                messages.add("successful authentication.");
+            } else {
+                responseMap.put("status", "failure");
+                messages.add("authentication failed.");
+            }
+            responseMap.put("messages", messages);
+            return renderResponse(SUCCESS_RESPONSE_CODE, null, new Gson().toJson(responseMap));
+        }
+        if (requestName.equals(GET_USER_DETAILS)) {
+            return renderResponse(SUCCESS_RESPONSE_CODE, null, getUserJSON("test", "test", "first", "last", ""));
+        }
+        if (requestName.equals(INDEX_WEB_REQUEST)) {
             return handleSetupLoginWebRequest(goPluginApiRequest);
         }
-        if (requestName.equals("authenticate")) {
+        if (requestName.equals(AUTHENTICATE_WEB_REQUEST)) {
             return handleAuthenticateWebRequest(goPluginApiRequest);
+        }
+        if (requestName.equals(TEST_WEB_REQUEST)) {
+            return renderResponse(SUCCESS_RESPONSE_CODE, null, getFileContents("/views/test.html"));
         }
         return null;
     }
@@ -156,6 +184,14 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
         return "http://" + "localhost:8153";
     }
 
+    private String getFileContents(String filePath) {
+        try {
+            return IOUtils.toString(getClass().getResource(filePath));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private GoApiRequest createGoApiRequest(final String api, final String userId, final String displayName, final String firstName, final String lastName, final String emailId) {
         return new GoApiRequest() {
             @Override
@@ -185,15 +221,19 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
 
             @Override
             public String requestBody() {
-                Map<String, String> userMap = new HashMap<String, String>();
-                userMap.put("id", userId);
-                userMap.put("username", displayName);
-                userMap.put("first-name", firstName);
-                userMap.put("last-name", lastName);
-                userMap.put("email-id", emailId);
-                return new Gson().toJson(userMap);
+                return getUserJSON(userId, displayName, firstName, lastName, emailId);
             }
         };
+    }
+
+    private String getUserJSON(String userId, String displayName, String firstName, String lastName, String emailId) {
+        Map<String, String> userMap = new HashMap<String, String>();
+        userMap.put("id", userId);
+        userMap.put("username", displayName);
+        userMap.put("first-name", firstName);
+        userMap.put("last-name", lastName);
+        userMap.put("email-id", emailId);
+        return new Gson().toJson(userMap);
     }
 
     private GoPluginIdentifier getGoPluginIdentifier() {
