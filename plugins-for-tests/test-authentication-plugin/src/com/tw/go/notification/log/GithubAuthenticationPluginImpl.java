@@ -18,7 +18,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import static java.util.Arrays.asList;
 
@@ -26,9 +29,8 @@ import static java.util.Arrays.asList;
 public class GithubAuthenticationPluginImpl implements GoPlugin {
     private static Logger LOGGER = Logger.getLoggerFor(GithubAuthenticationPluginImpl.class);
 
-    public static final String PLUGIN_CONFIGURATION = "plugin-configuration";
-    public static final String AUTHENTICATE_USER = "authenticate-user";
-    public static final String GET_USER_DETAILS = "get-user-details";
+    public static final String PLUGIN_CONFIGURATION = "go.authentication.plugin-configuration";
+    public static final String AUTHENTICATE_USER = "go.authentication.authenticate-user";
     public static final String INDEX_WEB_REQUEST = "index";
     public static final String AUTHENTICATE_WEB_REQUEST = "authenticate";
     public static final String TEST_WEB_REQUEST = "test";
@@ -63,20 +65,11 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
             Map<String, Object> requestBodyMap = new Gson().fromJson(goPluginApiRequest.requestBody(), Map.class);
             String username = (String) requestBodyMap.get("username");
             String password = (String) requestBodyMap.get("password");
-            Map<String, Object> responseMap = new HashMap<String, Object>();
-            List<String> messages = new ArrayList<String>();
             if (username.equals("test") && password.equals("test")) {
-                responseMap.put("status", "success");
-                messages.add("successful authentication.");
+                return renderResponse(SUCCESS_RESPONSE_CODE, null, getUserJSON("testname", "show name", ""));
             } else {
-                responseMap.put("status", "failure");
-                messages.add("authentication failed.");
+                return renderResponse(SUCCESS_RESPONSE_CODE, null, null);
             }
-            responseMap.put("messages", messages);
-            return renderResponse(SUCCESS_RESPONSE_CODE, null, new Gson().toJson(responseMap));
-        }
-        if (requestName.equals(GET_USER_DETAILS)) {
-            return renderResponse(SUCCESS_RESPONSE_CODE, null, getUserJSON("test", "test", "first", "last", ""));
         }
         if (requestName.equals(INDEX_WEB_REQUEST)) {
             return handleSetupLoginWebRequest(goPluginApiRequest);
@@ -87,7 +80,7 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
         if (requestName.equals(TEST_WEB_REQUEST)) {
             return renderResponse(SUCCESS_RESPONSE_CODE, null, getFileContents("/views/test.html"));
         }
-        return null;
+        return renderResponse(404, null, null);
     }
 
     @Override
@@ -126,21 +119,12 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
             AuthProvider provider = manager.connect(goPluginApiRequest.requestParameters());
             Profile profile = provider.getUserProfile();
 
-            String userId = profile.getValidatedId();
             String displayName = profile.getDisplayName();
             String fullName = profile.getFullName();
-            String firstName = isEmpty(fullName) ? displayName : fullName.split(" ")[0];
-            String lastName = isEmpty(fullName) || fullName.split(" ").length == 1 ? "" : fullName.split(" ")[1];
             String emailId = profile.getEmail();
             emailId = emailId == null ? emailId : emailId.toLowerCase().trim();
-            LOGGER.error(userId + " - " + displayName + " - " + firstName + " - " + lastName + " - " + emailId);
 
-            final String userJSON = getUserJSON(userId, displayName, firstName, lastName, emailId);
-            GoApiRequest authenticateUserRequest = createGoApiRequest("authenticate-user", userJSON);
-            GoApiResponse authenticateUserResponse = goApplicationAccessor.submit(authenticateUserRequest);
-            // handle error
-
-            delete();
+            authenticateUser(displayName, fullName, emailId);
 
             Map<String, String> responseHeaders = new HashMap<String, String>();
             responseHeaders.put("Location", getServerBaseURL());
@@ -148,7 +132,16 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
         } catch (Exception e) {
             LOGGER.error("Error occurred while Github OAuth authenticate.", e);
             return renderResponse(INTERNAL_ERROR_RESPONSE_CODE, null, null);
+        } finally {
+            delete();
         }
+    }
+
+    private void authenticateUser(String displayName, String fullName, String emailId) {
+        final String userJSON = getUserJSON(displayName, fullName, emailId);
+        GoApiRequest authenticateUserRequest = createGoApiRequest("go.processor.authentication.authenticate-user", userJSON);
+        GoApiResponse authenticateUserResponse = goApplicationAccessor.submit(authenticateUserRequest);
+        // handle error
     }
 
     private boolean isEmpty(String str) {
@@ -162,7 +155,7 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
         String socialAuthManagerStr = serializeObject(socialAuthManager);
         sessionData.put("social-auth-manager", socialAuthManagerStr);
         requestMap.put("session-data", sessionData);
-        GoApiRequest goApiRequest = createGoApiRequest("store-in-session", new Gson().toJson(requestMap));
+        GoApiRequest goApiRequest = createGoApiRequest("go.processor.session.put", new Gson().toJson(requestMap));
         GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
         // handle error
     }
@@ -183,7 +176,7 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
     private SocialAuthManager read() {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         requestMap.put("plugin-id", "github.authenticator");
-        GoApiRequest goApiRequest = createGoApiRequest("get-from-session", new Gson().toJson(requestMap));
+        GoApiRequest goApiRequest = createGoApiRequest("go.processor.session.get", new Gson().toJson(requestMap));
         GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
         // handle error
         String responseBody = response.responseBody();
@@ -206,13 +199,13 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
     private void delete() {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         requestMap.put("plugin-id", "github.authenticator");
-        GoApiRequest goApiRequest = createGoApiRequest("remove-from-session", new Gson().toJson(requestMap));
+        GoApiRequest goApiRequest = createGoApiRequest("go.processor.session.remove", new Gson().toJson(requestMap));
         GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
         // handle error
     }
 
     private String getURL() {
-        return String.format("%s/go/plugins/interact/github.authenticator/authenticate", getServerBaseURL());
+        return String.format("%s/go/plugin/interact/github.authenticator/authenticate", getServerBaseURL());
     }
 
     // TODO: this needs to be dynamic (system property)
@@ -237,7 +230,7 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
 
             @Override
             public String apiVersion() {
-                return null;
+                return "1.0";
             }
 
             @Override
@@ -262,12 +255,10 @@ public class GithubAuthenticationPluginImpl implements GoPlugin {
         };
     }
 
-    private String getUserJSON(String userId, String displayName, String firstName, String lastName, String emailId) {
+    private String getUserJSON(String username, String displayName, String emailId) {
         Map<String, String> userMap = new HashMap<String, String>();
-        userMap.put("id", userId);
-        userMap.put("username", displayName);
-        userMap.put("first-name", firstName);
-        userMap.put("last-name", lastName);
+        userMap.put("username", username);
+        userMap.put("display-name", displayName);
         userMap.put("email-id", emailId);
         return new Gson().toJson(userMap);
     }
