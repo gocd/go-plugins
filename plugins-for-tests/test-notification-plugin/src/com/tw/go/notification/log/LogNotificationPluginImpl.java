@@ -140,9 +140,21 @@ public class LogNotificationPluginImpl implements GoPlugin {
         String stageResult = (String) stageMap.get("result");
 
         GoApiResponse response = goApplicationAccessor.submit(getGoApiRequest(GET_PLUGIN_SETTINGS, requestWithPluginId()));
-        Map<String, String> responseMap = new GsonBuilder().create().fromJson(response.responseBody(), Map.class);
 
-        return String.format("[%s|%s|%s|%s|%s|%s|%s]", pipelineName, pipelineCounter, stageName, stageCounter, stageState, stageResult, responseMap.get("append_value"));
+        return String.format("[%s|%s|%s|%s|%s|%s|%s]", pipelineName, pipelineCounter, stageName, stageCounter, stageState, stageResult, getAppendValue(response));
+    }
+
+    private String getAppendValue(GoApiResponse response) {
+        String appendValue = "";
+        try {
+            Map<String, String> responseBodyMap = new GsonBuilder().create().fromJson(response.responseBody(), Map.class);
+            if (responseBodyMap.get("append_value") != null) {
+                appendValue = responseBodyMap.get("append_value");
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return appendValue;
     }
 
     private String requestWithPluginId() {
