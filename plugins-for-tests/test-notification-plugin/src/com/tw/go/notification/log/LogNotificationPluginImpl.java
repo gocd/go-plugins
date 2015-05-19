@@ -188,7 +188,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
         return new GoPluginIdentifier(EXTENSION_NAME, goSupportedVersions);
     }
 
-    private GoApiRequest getGoApiRequest(final String api, final String requestBody) {
+    GoApiRequest getGoApiRequest(final String api, final String requestBody) {
         return new GoApiRequest() {
             @Override
             public String api() {
