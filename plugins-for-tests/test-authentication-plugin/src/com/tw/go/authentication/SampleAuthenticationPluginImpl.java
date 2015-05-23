@@ -75,7 +75,9 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
         String username = (String) requestBodyMap.get("username");
         String password = (String) requestBodyMap.get("password");
         if (username.equals("test") && password.equals("test")) {
-            return renderResponse(SUCCESS_RESPONSE_CODE, null, getUserJSON("test", "display name", ""));
+            Map<String, Object> userMap = new HashMap<String, Object>();
+            userMap.put("user", getUserJSON("test", "display name", ""));
+            return renderResponse(SUCCESS_RESPONSE_CODE, null, JSONUtils.toJSON(userMap));
         } else {
             return renderResponse(SUCCESS_RESPONSE_CODE, null, null);
         }
@@ -121,8 +123,9 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
     }
 
     private void authenticateUser(String displayName, String fullName, String emailId) {
-        final String userJSON = getUserJSON(displayName, fullName, emailId);
-        GoApiRequest authenticateUserRequest = createGoApiRequest("go.processor.authentication.authenticate-user", userJSON);
+        Map<String, Object> userMap = new HashMap<String, Object>();
+        userMap.put("user", getUserJSON(displayName, fullName, emailId));
+        GoApiRequest authenticateUserRequest = createGoApiRequest("go.processor.authentication.authenticate-user", JSONUtils.toJSON(userMap));
         GoApiResponse authenticateUserResponse = goApplicationAccessor.submit(authenticateUserRequest);
         // handle error
     }
@@ -171,12 +174,12 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
         }
     }
 
-    private String getUserJSON(String username, String displayName, String emailId) {
+    private Map<String, String> getUserJSON(String username, String displayName, String emailId) {
         Map<String, String> userMap = new HashMap<String, String>();
         userMap.put("username", username);
         userMap.put("display-name", displayName);
         userMap.put("email-id", emailId);
-        return JSONUtils.toJSON(userMap);
+        return userMap;
     }
 
     private GoPluginIdentifier getGoPluginIdentifier() {
