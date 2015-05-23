@@ -11,6 +11,7 @@ import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.IOUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
 
     public static final String PLUGIN_CONFIGURATION = "go.authentication.plugin-configuration";
     public static final String AUTHENTICATE_USER = "go.authentication.authenticate-user";
+    public static final String SEARCH_USER = "go.authentication.search-user";
 
     public static final String WEB_REQUEST_INDEX = "index";
     public static final String WEB_REQUEST_AUTHENTICATE = "authenticate";
@@ -49,6 +51,8 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
             return handlePluginConfigurationRequest();
         } else if (requestName.equals(AUTHENTICATE_USER)) {
             return handleAuthenticateUserRequest(goPluginApiRequest);
+        } else if (requestName.equals(SEARCH_USER)) {
+            return handleSearchUserRequest(goPluginApiRequest);
         } else if (requestName.equals(WEB_REQUEST_INDEX)) {
             return handleSetupLoginWebRequest(goPluginApiRequest);
         } else if (requestName.equals(WEB_REQUEST_AUTHENTICATE)) {
@@ -66,7 +70,7 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
         Map<String, Object> configuration = new HashMap<String, Object>();
         configuration.put("display-name", "Sample");
         configuration.put("supports-password-based-authentication", true);
-        configuration.put("supports-user-search", false);
+        configuration.put("supports-user-search", true);
         return renderResponse(SUCCESS_RESPONSE_CODE, null, JSONUtils.toJSON(configuration));
     }
 
@@ -76,11 +80,31 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
         String password = (String) requestBodyMap.get("password");
         if (username.equals("test") && password.equals("test")) {
             Map<String, Object> userMap = new HashMap<String, Object>();
-            userMap.put("user", getUserJSON("test", "display name", ""));
+            userMap.put("user", getUserJSON("test", "display name", "test@test.com"));
             return renderResponse(SUCCESS_RESPONSE_CODE, null, JSONUtils.toJSON(userMap));
         } else {
             return renderResponse(SUCCESS_RESPONSE_CODE, null, null);
         }
+    }
+
+    private GoPluginApiResponse handleSearchUserRequest(GoPluginApiRequest goPluginApiRequest) {
+        Map<String, String> requestBodyMap = (Map<String, String>) JSONUtils.fromJSON(goPluginApiRequest.requestBody());
+        String searchTerm = requestBodyMap.get("search-term");
+        List<Map<String, String>> searchResults = new ArrayList<Map<String, String>>();
+        if (searchTermMatchesUsername(searchTerm, "t", "te", "tes", "test")) {
+            searchResults.add(getUserJSON("test", "display name", "test@test.com"));
+        }
+        return renderResponse(SUCCESS_RESPONSE_CODE, null, JSONUtils.toJSON(searchResults));
+    }
+
+    // TODO: replace with reg-ex
+    private boolean searchTermMatchesUsername(String searchTerm, String... matchers) {
+        for (String matcher : matchers) {
+            if (searchTerm.equalsIgnoreCase(matcher)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private GoPluginApiResponse handleSetupLoginWebRequest(GoPluginApiRequest goPluginApiRequest) {
