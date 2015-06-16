@@ -65,6 +65,7 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
     private GoPluginApiResponse handlePluginConfigurationRequest() {
         Map<String, Object> configuration = new HashMap<String, Object>();
         configuration.put("display-name", "Sample");
+        configuration.put("display-image-url", "http://icons.iconarchive.com/icons/saki/snowish/48/Authentication-Lock-icon.png");
         configuration.put("supports-password-based-authentication", true);
         configuration.put("supports-user-search", false);
         return renderResponse(SUCCESS_RESPONSE_CODE, null, JSONUtils.toJSON(configuration));
