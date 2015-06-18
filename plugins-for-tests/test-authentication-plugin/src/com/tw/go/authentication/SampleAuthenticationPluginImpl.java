@@ -11,6 +11,7 @@ import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.IOUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
     private static final List<String> goSupportedVersions = asList("1.0");
 
     public static final String PLUGIN_CONFIGURATION = "go.authentication.plugin-configuration";
+    public static final String SEARCH_USER = "go.authentication.search-user";
     public static final String AUTHENTICATE_USER = "go.authentication.authenticate-user";
 
     public static final String WEB_REQUEST_INDEX = "index";
@@ -47,6 +49,8 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
         String requestName = goPluginApiRequest.requestName();
         if (requestName.equals(PLUGIN_CONFIGURATION)) {
             return handlePluginConfigurationRequest();
+        } else if (requestName.equals(SEARCH_USER)) {
+            return handleSearchUserRequest(goPluginApiRequest);
         } else if (requestName.equals(AUTHENTICATE_USER)) {
             return handleAuthenticateUserRequest(goPluginApiRequest);
         } else if (requestName.equals(WEB_REQUEST_INDEX)) {
@@ -65,10 +69,22 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
     private GoPluginApiResponse handlePluginConfigurationRequest() {
         Map<String, Object> configuration = new HashMap<String, Object>();
         configuration.put("display-name", "Sample");
-        configuration.put("display-image-url", "http://icons.iconarchive.com/icons/saki/snowish/48/Authentication-Lock-icon.png");
+        configuration.put("display-image-url", "http://icons.iconarchive.com/icons/saki/snowish/32/Authentication-Lock-icon.png");
+        configuration.put("supports-web-based-authentication", true);
         configuration.put("supports-password-based-authentication", true);
-        configuration.put("supports-user-search", false);
         return renderResponse(SUCCESS_RESPONSE_CODE, null, JSONUtils.toJSON(configuration));
+    }
+
+    private GoPluginApiResponse handleSearchUserRequest(GoPluginApiRequest goPluginApiRequest) {
+        Map<String, String> requestBodyMap = (Map<String, String>) JSONUtils.fromJSON(goPluginApiRequest.requestBody());
+        String searchTerm = requestBodyMap.get("search-term");
+
+        List<Map> searchResults = new ArrayList<Map>();
+        if (searchTerm.equalsIgnoreCase("t") || searchTerm.equalsIgnoreCase("te") || searchTerm.equalsIgnoreCase("tes") || searchTerm.equalsIgnoreCase("test")) {
+            searchResults.add(getUserJSON("test", "display name", "test@organization.com"));
+        }
+
+        return renderResponse(SUCCESS_RESPONSE_CODE, null, JSONUtils.toJSON(searchResults));
     }
 
     private GoPluginApiResponse handleAuthenticateUserRequest(GoPluginApiRequest goPluginApiRequest) {
@@ -112,8 +128,6 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
         } catch (Exception e) {
             LOGGER.error("Error occurred while Login authenticate.", e);
             return renderResponse(INTERNAL_ERROR_RESPONSE_CODE, null, null);
-        } finally {
-            delete();
         }
     }
 
@@ -128,37 +142,6 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
         userMap.put("user", getUserJSON(displayName, fullName, emailId));
         GoApiRequest authenticateUserRequest = createGoApiRequest("go.processor.authentication.authenticate-user", JSONUtils.toJSON(userMap));
         GoApiResponse authenticateUserResponse = goApplicationAccessor.submit(authenticateUserRequest);
-        // handle error
-    }
-
-    private void store(String verificationCode) {
-        Map<String, Object> requestMap = new HashMap<String, Object>();
-        requestMap.put("plugin-id", PLUGIN_ID);
-        Map<String, Object> sessionData = new HashMap<String, Object>();
-        sessionData.put("verification-code", verificationCode);
-        requestMap.put("session-data", sessionData);
-        GoApiRequest goApiRequest = createGoApiRequest("go.processor.session.put", JSONUtils.toJSON(requestMap));
-        GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
-        // handle error
-    }
-
-    private String read() {
-        Map<String, Object> requestMap = new HashMap<String, Object>();
-        requestMap.put("plugin-id", PLUGIN_ID);
-        GoApiRequest goApiRequest = createGoApiRequest("go.processor.session.get", JSONUtils.toJSON(requestMap));
-        GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
-        // handle error
-        String responseBody = response.responseBody();
-        Map<String, Object> sessionData = (Map<String, Object>) JSONUtils.fromJSON(responseBody);
-        String verificationCode = (String) sessionData.get("verification-code");
-        return verificationCode;
-    }
-
-    private void delete() {
-        Map<String, Object> requestMap = new HashMap<String, Object>();
-        requestMap.put("plugin-id", PLUGIN_ID);
-        GoApiRequest goApiRequest = createGoApiRequest("go.processor.session.remove", JSONUtils.toJSON(requestMap));
-        GoApiResponse response = goApplicationAccessor.submit(goApiRequest);
         // handle error
     }
 
