@@ -21,13 +21,18 @@ import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoqueryCacheCleaner;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.message.PackageRevisionMessage;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.io.File;
+import java.security.MessageDigest;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static com.tw.go.plugin.material.artifactrepository.yum.exec.command.RepoQueryCommand.DELIMITER;
 import static org.hamcrest.core.Is.is;
@@ -194,28 +199,43 @@ public class RepoQueryCommandTest {
     }
 
     @Test
-    public void shouldHandleMultipleThreads() throws InterruptedException {
+    public void shouldHandleMultipleThreadsForSameRepository() throws InterruptedException {
         final StringBuilder errors = new StringBuilder();
-        Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
-            public void uncaughtException(Thread t, Throwable e) {
-                errors.append(t.getName() + " : " + e.getMessage());
-            }
-        };
-        String repoId = UUID.randomUUID().toString();
-        ArrayList<Thread> threads = new ArrayList<Thread>();
-        for (int i = 0; i < 100; i++) {
-            Thread thread = new Thread(new CommandThread(repoId));
-            thread.setUncaughtExceptionHandler(handler);
-            threads.add(thread);
-            thread.start();
-        }
-        for (Thread thread : threads) {
-            thread.join();
-        }
+
+        List<String> repositories = Arrays.asList("file://" + new File("test/repos/samplerepo").getAbsolutePath());
+        executeInParallel(repositories, errors);
 
         if (!StringUtil.isBlank(errors.toString())) {
             fail(errors.toString());
         }
+    }
+
+    @Test
+    public void shouldHandleMultipleThreadsForDifferentRepository() throws InterruptedException {
+        final StringBuilder errors = new StringBuilder();
+
+        List<String> repositories = Arrays.asList("file://" + new File("test/repos/samplerepo").getAbsolutePath(), "file://" + new File("test/repos/sample-repo-2").getAbsolutePath());
+        executeInParallel(repositories, errors);
+
+        if (!StringUtil.isBlank(errors.toString())) {
+            fail(errors.toString());
+        }
+    }
+
+    private void executeInParallel(List<String> repositories, final StringBuilder errors) throws InterruptedException {
+        ExceptionHandler handler = new ExceptionHandler() {
+            @Override
+            public void handleException(Runnable r, Throwable t) {
+                errors.append(String.format("%s : %s\n", ((Thread) r).getName(), t.getMessage()));
+            }
+        };
+        ExecutorService executor = Executors.newFixedThreadPool(20);
+        for (int i = 0; i < 100; i++) {
+            Runnable worker = new CommandThread(repositories.get(i % repositories.size()), handler);
+            executor.execute(worker);
+        }
+        executor.shutdown();
+        executor.awaitTermination(1, TimeUnit.MINUTES);
     }
 
     private String repoQueryOutput(long time, String packager, String location, String trackbackUrl, String buildHost) {
@@ -241,15 +261,25 @@ public class RepoQueryCommandTest {
     class CommandThread implements Runnable {
         private String repoId;
         private String repoUrl;
+        private ExceptionHandler handler;
 
-        CommandThread(String repoId) {
-            this.repoId = repoId;
-            repoUrl = "file://" + new File("test/repos/samplerepo").getAbsolutePath();
+        CommandThread(String repoUrl, ExceptionHandler handler) {
+            this.repoId = DigestUtils.md5Hex(repoUrl);
+            this.repoUrl = repoUrl;
+            this.handler = handler;
         }
 
         public void run() {
-            new RepoQueryCommand(new RepoQueryParams(repoId, new RepoUrl(repoUrl, null, null), "go-agent")).execute();
+            try {
+                new RepoQueryCommand(new RepoQueryParams(repoId, new RepoUrl(repoUrl, null, null), "go-agent")).execute();
+            } catch (Throwable t) {
+                handler.handleException(Thread.currentThread(), t);
+            }
         }
+    }
+
+    interface ExceptionHandler {
+        void handleException(Runnable r, Throwable t);
     }
 
     @After
