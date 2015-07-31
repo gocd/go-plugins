@@ -94,26 +94,6 @@ public class RepoQueryCommandTest {
     }
 
     @Test
-    public void shouldSetHomeEnvToTempWhenDefaultHomeEnvIsMissing() throws Exception {
-        Map<String, String> expectedEnvMap = new HashMap<String, String>();
-        expectedEnvMap.put("HOME", System.getProperty("java.io.tmpdir"));
-
-        ArrayList<String> stdOut = new ArrayList<String>();
-        long time = 5;
-        stdOut.add(repoQueryOutput(time, "packager", "http://location", "http://jenkins.job", "ca.hostname"));
-
-        ProcessRunner processRunner = mock(ProcessRunner.class);
-        when(processRunner.execute(any(String[].class), eq(expectedEnvMap))).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
-
-        RepoQueryCommand repoQueryCommand = spy(new RepoQueryCommand(processRunner, new RepoQueryParams("repoid", new RepoUrl("http://repourl", null, null), "pkg-spec")));
-        doReturn(null).when(repoQueryCommand).getSystemEnvVariableFor("HOME");
-
-        repoQueryCommand.execute();
-
-        verify(processRunner).execute(any(String[].class), eq(expectedEnvMap));
-    }
-
-    @Test
     public void shouldThrowExceptionIfCommandFails() {
         ProcessRunner processRunner = mock(ProcessRunner.class);
         ArrayList<String> stdErr = new ArrayList<String>();

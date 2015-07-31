@@ -19,9 +19,12 @@ package com.tw.go.plugin.material.artifactrepository.yum.exec.command;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.tw.go.plugin.common.util.ListUtil;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
+import com.tw.go.plugin.material.artifactrepository.yum.exec.YumEnvironmentMap;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.message.PackageRevisionMessage;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static java.lang.Long.parseLong;
 import static java.lang.String.format;
@@ -43,6 +46,7 @@ public class RepoQueryCommand {
     }
 
     public PackageRevisionMessage execute() {
+        YumEnvironmentMap yumEnvironmentMap = new YumEnvironmentMap(params.getRepoId());
         String[] command = {"repoquery",
                 "--repofrompath=" + params.getRepoFromId(),
                 "--repoid=" + params.getRepoId(),
@@ -55,7 +59,7 @@ public class RepoQueryCommand {
 
         ProcessOutput processOutput = null;
         synchronized (params.getRepoId().intern()) {
-            processOutput = processRunner.execute(command, buildHomeEnvironmentMap());
+            processOutput = processRunner.execute(command, yumEnvironmentMap.buildYumEnvironmentMap());
         }
         if (isSuccessful(processOutput)) {
             return parseOutput(processOutput);
@@ -63,22 +67,6 @@ public class RepoQueryCommand {
         String message = format("Error while querying repository with path '%s' and package spec '%s'. %s", params.getRepoUrl(), params.getPackageSpec(), processOutput.getStdErrorAsString());
         LOGGER.info(message);
         throw new RuntimeException(message);
-    }
-
-    private Map<String, String> buildHomeEnvironmentMap() {
-        String homeEnvVariableName = "HOME";
-        String homeEnv = getSystemEnvVariableFor(homeEnvVariableName);
-        Map<String, String> envMap = new HashMap<String, String>();
-        if (homeEnv == null) {
-            envMap.put(homeEnvVariableName, System.getProperty("java.io.tmpdir"));
-        } else {
-            envMap.put(homeEnvVariableName, homeEnv);
-        }
-        return envMap;
-    }
-
-    String getSystemEnvVariableFor(String name) {
-        return System.getenv(name);
     }
 
     private boolean isSuccessful(ProcessOutput processOutput) {
