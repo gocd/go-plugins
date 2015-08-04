@@ -1,5 +1,5 @@
 /*************************GO-LICENSE-START*********************************
- * Copyright 2014 ThoughtWorks, Inc.
+ * Copyright 2015 ThoughtWorks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoqueryCacheCleaner;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.message.PackageRevisionMessage;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class RepoQueryCommandTest {
         ArrayList<String> stdOut = new ArrayList<String>();
         long time = 5;
         stdOut.add(repoQueryOutput(time, "packager", "http://location", "http://jenkins.job", "ca.hostname"));
-        when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
+        when(processRunner.execute(expectedCommand, envMapWithDefaultValues(repoid))).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
         PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, new RepoQueryParams(repoid, new RepoUrl(repourl, null, null), spec)).execute();
 
         assertThat(packageRevision.getRevision(), is("name-version-release.arch"));
@@ -65,7 +66,7 @@ public class RepoQueryCommandTest {
         assertThat(packageRevision.getData().get(Constants.PACKAGE_LOCATION), is("http://location"));
         assertThat(packageRevision.getTrackbackUrl(), is("http://jenkins.job"));
         assertThat(packageRevision.getRevisionComment(), is("Built on ca.hostname"));
-        verify(processRunner).execute(expectedCommand, envMapWithDefaultHome());
+        verify(processRunner).execute(expectedCommand, envMapWithDefaultValues(repoid));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class RepoQueryCommandTest {
         long time = 5;
         stdOut.add(repoQueryOutput(time, "None", "NONE", "NOne", "none"));
 
-        when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
+        when(processRunner.execute(expectedCommand, envMapWithDefaultValues(repoid))).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
         PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, new RepoQueryParams(repoid, new RepoUrl(repourl, null, null), spec)).execute();
 
         assertThat(packageRevision.getRevision(), is("name-version-release.arch"));
@@ -90,27 +91,7 @@ public class RepoQueryCommandTest {
         assertThat(packageRevision.getData().get(Constants.PACKAGE_LOCATION), is(nullValue()));
         assertThat(packageRevision.getTrackbackUrl(), is(nullValue()));
         assertThat(packageRevision.getRevisionComment(), is(nullValue()));
-        verify(processRunner).execute(expectedCommand, envMapWithDefaultHome());
-    }
-
-    @Test
-    public void shouldSetHomeEnvToTempWhenDefaultHomeEnvIsMissing() throws Exception {
-        Map<String, String> expectedEnvMap = new HashMap<String, String>();
-        expectedEnvMap.put("HOME", System.getProperty("java.io.tmpdir"));
-
-        ArrayList<String> stdOut = new ArrayList<String>();
-        long time = 5;
-        stdOut.add(repoQueryOutput(time, "packager", "http://location", "http://jenkins.job", "ca.hostname"));
-
-        ProcessRunner processRunner = mock(ProcessRunner.class);
-        when(processRunner.execute(any(String[].class), eq(expectedEnvMap))).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
-
-        RepoQueryCommand repoQueryCommand = spy(new RepoQueryCommand(processRunner, new RepoQueryParams("repoid", new RepoUrl("http://repourl", null, null), "pkg-spec")));
-        doReturn(null).when(repoQueryCommand).getSystemEnvVariableFor("HOME");
-
-        repoQueryCommand.execute();
-
-        verify(processRunner).execute(any(String[].class), eq(expectedEnvMap));
+        verify(processRunner).execute(expectedCommand, envMapWithDefaultValues(repoid));
     }
 
     @Test
@@ -139,11 +120,11 @@ public class RepoQueryCommandTest {
         ArrayList<String> stdOut = new ArrayList<String>();
         long time = 5;
         stdOut.add(repoQueryOutput(time, "packager", "http://location", "http://jenkins.job", "ca.hostname"));
-        when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
+        when(processRunner.execute(expectedCommand, envMapWithDefaultValues(repoid))).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
         RepoQueryParams params = new RepoQueryParams(repoid, new RepoUrl(repourl, "username", "!4321abcd"), spec);
         PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, params).execute();
         assertThat(packageRevision, is(not(nullValue())));
-        verify(processRunner).execute(expectedCommand, envMapWithDefaultHome());
+        verify(processRunner).execute(expectedCommand, envMapWithDefaultValues(repoid));
     }
 
     @Test
@@ -159,11 +140,11 @@ public class RepoQueryCommandTest {
         long time = 5;
         stdOut.add(repoQueryOutput(time, "packager", "http://foo.com/bar", "http://jenkins.job", "ca.hostname"));
 
-        when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
+        when(processRunner.execute(expectedCommand, envMapWithDefaultValues(repoid))).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
         RepoQueryParams params = new RepoQueryParams(repoid, new RepoUrl(repourl, "username", "!4321abcd"), spec);
         PackageRevisionMessage packageRevision = new RepoQueryCommand(processRunner, params).execute();
         assertThat(packageRevision.getData().get(Constants.PACKAGE_LOCATION), is("http://foo.com/bar"));
-        verify(processRunner).execute(expectedCommand, envMapWithDefaultHome());
+        verify(processRunner).execute(expectedCommand, envMapWithDefaultValues(repoid));
     }
 
     @Test
@@ -182,14 +163,14 @@ public class RepoQueryCommandTest {
                 + DELIMITER + "trackback" + DELIMITER + "revision Comment");
         stdOut.add("getPackage/go-agent-13.1.0-13422.x86_64.rpm" + DELIMITER + "go-agent" + DELIMITER + "13.1.0" + DELIMITER + "13422" + DELIMITER + "x86_64" + DELIMITER + time + DELIMITER + "packager" +
                 DELIMITER + "http://foo.com/bar" + DELIMITER + "trackback" + DELIMITER + "revision Comment");
-        when(processRunner.execute(expectedCommand, envMapWithDefaultHome())).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
+        when(processRunner.execute(expectedCommand, envMapWithDefaultValues(repoid))).thenReturn(new ProcessOutput(0, stdOut, new ArrayList<String>()));
         RepoQueryParams params = new RepoQueryParams(repoid, new RepoUrl(repourl, "username", "!4321abcd"), spec);
         try {
             new RepoQueryCommand(processRunner, params).execute();
             fail("expected failure");
         } catch (Exception e) {
             assertThat(e.getMessage(), containsString("Given Package Spec (go-agent) resolves to more than one file on the repository: go-agent-13.1.0-13422.noarch.rpm, go-agent-13.1.0-13422.x86_64.rpm"));
-            verify(processRunner).execute(expectedCommand, envMapWithDefaultHome());
+            verify(processRunner).execute(expectedCommand, envMapWithDefaultValues(repoid));
         }
     }
 
@@ -232,9 +213,10 @@ public class RepoQueryCommandTest {
                 "%{RELATIVEPATH}" + DELIMITER + "%{NAME}" + DELIMITER + "%{VERSION}" + DELIMITER + "%{RELEASE}" + DELIMITER + "%{ARCH}" + DELIMITER + "%{BUILDTIME}" + DELIMITER + "%{PACKAGER}" + DELIMITER + "%{LOCATION}" + DELIMITER + "%{URL}" + DELIMITER + "%{BUILDHOST}"};
     }
 
-    private Map<String, String> envMapWithDefaultHome() {
+    private Map<String, String> envMapWithDefaultValues(String repoid) {
         Map<String, String> expectedEnvMap = new HashMap<String, String>();
         expectedEnvMap.put("HOME", System.getenv("HOME"));
+        expectedEnvMap.put("TMPDIR", String.format("/var/tmp/go-yum-plugin-%s", DigestUtils.md5Hex(repoid)));
         return expectedEnvMap;
     }
 
