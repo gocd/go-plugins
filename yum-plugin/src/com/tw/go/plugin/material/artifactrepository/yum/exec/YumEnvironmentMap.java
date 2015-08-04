@@ -16,8 +16,6 @@
 
 package com.tw.go.plugin.material.artifactrepository.yum.exec;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +56,7 @@ public class YumEnvironmentMap {
     }
 
     private String getTempRepoFilePath() {
-        File temporaryRepoFileLocation = new File(getSystemPropertyValueFor("go.yum.tmpdir", defaultTempYumRepoDir), String.format("go-yum-plugin-%s", DigestUtils.md5Hex(packageRepoId)));
+        File temporaryRepoFileLocation = new File(getSystemPropertyValueFor("go.yum.tmpdir", defaultTempYumRepoDir), String.format("go-yum-plugin-%s", packageRepoId));
         temporaryRepoFileLocation.mkdirs();
         return temporaryRepoFileLocation.getAbsolutePath();
     }
