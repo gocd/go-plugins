@@ -21,7 +21,6 @@ import com.tw.go.plugin.material.artifactrepository.yum.exec.Constants;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoUrl;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.RepoqueryCacheCleaner;
 import com.tw.go.plugin.material.artifactrepository.yum.exec.message.PackageRevisionMessage;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -216,7 +215,7 @@ public class RepoQueryCommandTest {
     private Map<String, String> envMapWithDefaultValues(String repoid) {
         Map<String, String> expectedEnvMap = new HashMap<String, String>();
         expectedEnvMap.put("HOME", System.getenv("HOME"));
-        expectedEnvMap.put("TMPDIR", String.format("/var/tmp/go-yum-plugin-%s", DigestUtils.md5Hex(repoid)));
+        expectedEnvMap.put("TMPDIR", String.format("/var/tmp/go-yum-plugin-%s", repoid));
         return expectedEnvMap;
     }
 
