@@ -65,11 +65,6 @@ public class HttpConnectionChecker implements ConnectionChecker {
                 setDefaultRequestConfig(requestConfig).
                 setTargetAuthenticationStrategy(new TargetAuthenticationStrategy()).
                 build();
-
-//        HttpClient client = new HttpClient();
-//        client.getParams().setIntParameter(HttpConnectionParams.CONNECTION_TIMEOUT, getSystemProperty("yum.repo.connection.timeout", 10 * 1000));
-//        client.getParams().setSoTimeout(getSystemProperty("yum.repo.socket.timeout", 5 * 60 * 1000));
-//        return client;
     }
 
     private int getSystemProperty(String key, int defaultValue) {
