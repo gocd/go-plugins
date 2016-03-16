@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<go-plugin id="yum" version="2">
+<go-plugin id="yum" version="1">
     <about>
         <name>Yum plugin</name>
         <version>2.0.1</version>
@@ -30,4 +30,3 @@
         </target-os>
     </about>
 </go-plugin>
-
