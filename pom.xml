@@ -120,7 +120,7 @@
                 <executions>
                     <execution>
                         <id>copy-plugin-jars-to-dist</id>
-                        <phase>prepare-package</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
