@@ -10,3 +10,4 @@ go-plugins-dist/
 *.iws
 **/*.ipr
 **/*.iml
+**/*.swp
