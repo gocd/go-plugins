@@ -11,3 +11,5 @@ go-plugins-dist/
 **/*.ipr
 **/*.iml
 **/*.swp
+.gradle/
+build/

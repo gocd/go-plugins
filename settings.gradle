@@ -1,0 +1,30 @@
+rootProject.name = 'go-plugins'
+include ':plugin-common'
+include ':invalid-xml-plugin'
+include ':plugin-with-invalid-id'
+include ':plugin-with-multiple-load-methods'
+include ':test-curl-plugin'
+include ':test-notification-plugin'
+include ':test-authentication-plugin'
+include ':test-scm-plugin'
+include ':test-donothing-plugin'
+include ':test-valid-innerclass-plugin'
+include ':test-valid-staticclass-plugin'
+include ':test-valid-subclass-plugin'
+include ':test-with-some-plugin-xml-values'
+include ':yum-repo-exec-poller'
+
+project(':plugin-common').projectDir = "$rootDir/plugin-common" as File
+project(':invalid-xml-plugin').projectDir = "$rootDir/plugins-for-tests/invalid-xml-plugin" as File
+project(':plugin-with-invalid-id').projectDir = "$rootDir/plugins-for-tests/plugin-with-invalid-id" as File
+project(':plugin-with-multiple-load-methods').projectDir = "$rootDir/plugins-for-tests/plugin-with-multiple-load-methods" as File
+project(':test-curl-plugin').projectDir = "$rootDir/plugins-for-tests/test-curl-plugin" as File
+project(':test-notification-plugin').projectDir = "$rootDir/plugins-for-tests/test-notification-plugin" as File
+project(':test-authentication-plugin').projectDir = "$rootDir/plugins-for-tests/test-authentication-plugin" as File
+project(':test-scm-plugin').projectDir = "$rootDir/plugins-for-tests/test-scm-plugin" as File
+project(':test-donothing-plugin').projectDir = "$rootDir/plugins-for-tests/test-donothing-plugin" as File
+project(':test-valid-innerclass-plugin').projectDir = "$rootDir/plugins-for-tests/test-valid-innerclass-plugin" as File
+project(':test-valid-staticclass-plugin').projectDir = "$rootDir/plugins-for-tests/test-valid-staticclass-plugin" as File
+project(':test-valid-subclass-plugin').projectDir = "$rootDir/plugins-for-tests/test-valid-subclass-plugin" as File
+project(':test-with-some-plugin-xml-values').projectDir = "$rootDir/plugins-for-tests/test-with-some-plugin-xml-values" as File
+project(':yum-repo-exec-poller').projectDir = "$rootDir/yum-plugin" as File

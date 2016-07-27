@@ -1,0 +1,9 @@
+
+description = ''
+dependencies {
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.3.1'
+    compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version:'3.6.2.201501210735-r'
+    compile group: 'joda-time', name: 'joda-time', version:'2.3'
+    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'commons-validator', name: 'commons-validator', version:'1.4.0'
+}

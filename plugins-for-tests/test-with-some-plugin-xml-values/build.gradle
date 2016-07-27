@@ -1,0 +1,5 @@
+
+description = ''
+dependencies {
+    compile group: 'com.thoughtworks.go', name: 'dependency', version:'1.0'
+}
