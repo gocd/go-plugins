@@ -1,18 +1,4 @@
-Please refer https://github.com/gocd/go-plugins/tree/api_based_yum_plugin/yum-plugin for api based yum plugin
-
-This location hosts all the plugins created by ThoughtWorks Go. The directory follows the below structure:
-
-```
-repo:
-  plugin-1:
-    src:
-    test:
-    buildfile.xml
-  plugin-2:
-    src:
-    ... 
-  README
-```
+These are some test plugins used to test how GoCD behaves for different plugins, and to check if we've broken any API.
 
 ## Contributing
 
@@ -22,7 +8,7 @@ A lot of useful information like links to user documentation, design documentati
 ## License
 
 ```plain
-Copyright 2015 ThoughtWorks, Inc.
+Copyright 2017 ThoughtWorks, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

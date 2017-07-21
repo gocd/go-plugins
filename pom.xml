@@ -69,7 +69,6 @@
         <module>plugins-for-tests/test-valid-staticclass-plugin</module>
         <module>plugins-for-tests/test-valid-subclass-plugin</module>
         <module>plugins-for-tests/test-with-some-plugin-xml-values</module>
-        <module>yum-plugin</module>
     </modules>
 
     <build>
