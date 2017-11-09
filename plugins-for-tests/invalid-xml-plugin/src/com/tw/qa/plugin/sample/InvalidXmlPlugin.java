@@ -1,5 +1,5 @@
 /*************************GO-LICENSE-START*********************************
- * Copyright 2014 ThoughtWorks, Inc.
+ * Copyright 2017 ThoughtWorks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,24 @@
 
 package com.tw.qa.plugin.sample;
 
+import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
+import com.thoughtworks.go.plugin.api.GoPlugin;
+import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.annotation.Load;
 import com.thoughtworks.go.plugin.api.annotation.UnLoad;
+import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.info.PluginContext;
-import com.thoughtworks.go.plugin.api.info.PluginDescriptor;
-import com.thoughtworks.go.plugin.api.info.PluginDescriptorAware;
 import com.thoughtworks.go.plugin.api.logging.Logger;
+import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
+
+import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 @Extension
-public class InvalidXmlPlugin implements PluginDescriptorAware {
+public class InvalidXmlPlugin implements GoPlugin {
     Logger logger = Logger.getLoggerFor(InvalidXmlPlugin.class);
 
     static {
@@ -38,11 +46,38 @@ public class InvalidXmlPlugin implements PluginDescriptorAware {
         System.out.println("Invalid Xml Plugin loaded");
     }
 
-    public void setPluginDescriptor(PluginDescriptor descriptor) {
-    }
-
     @UnLoad
     public void onUnload(PluginContext context) {
         System.out.println("Plugin unloaded");
+    }
+
+    @Override
+    public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
+
+    }
+
+    @Override
+    public GoPluginApiResponse handle(GoPluginApiRequest goPluginApiRequest) throws UnhandledRequestTypeException {
+        return new GoPluginApiResponse() {
+            @Override
+            public int responseCode() {
+                return 200;
+            }
+
+            @Override
+            public Map<String, String> responseHeaders() {
+                return null;
+            }
+
+            @Override
+            public String responseBody() {
+                return "{}";
+            }
+        };
+    }
+
+    @Override
+    public GoPluginIdentifier pluginIdentifier() {
+        return new GoPluginIdentifier("InvalidXmlPlugin", asList("1.0"));
     }
 }

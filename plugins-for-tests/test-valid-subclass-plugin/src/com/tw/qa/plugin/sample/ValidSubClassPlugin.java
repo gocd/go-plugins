@@ -1,5 +1,5 @@
 /*************************GO-LICENSE-START*********************************
- * Copyright 2014 ThoughtWorks, Inc.
+ * Copyright 2017 ThoughtWorks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,25 @@
 
 package com.tw.qa.plugin.sample;
 
-import com.thoughtworks.go.plugin.api.annotation.Extension;
+import com.google.gson.GsonBuilder;
+import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
+import com.thoughtworks.go.plugin.api.GoPlugin;
+import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Load;
 import com.thoughtworks.go.plugin.api.annotation.UnLoad;
+import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.info.PluginContext;
-import com.thoughtworks.go.plugin.api.info.PluginDescriptor;
-import com.thoughtworks.go.plugin.api.info.PluginDescriptorAware;
 import com.thoughtworks.go.plugin.api.logging.Logger;
+import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
+import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.tw.go.dependency.Console;
 
-@Extension
-public class ValidSubClassPlugin implements PluginDescriptorAware {
+import java.util.HashMap;
+
+import static java.util.Arrays.asList;
+
+public class ValidSubClassPlugin implements GoPlugin {
     Console console = new Console();
     Logger logger = Logger.getLoggerFor(ValidSubClassPlugin.class);
 
@@ -41,12 +49,39 @@ public class ValidSubClassPlugin implements PluginDescriptorAware {
         System.out.println("ValidSubClassPlugin loaded");
     }
 
-    public void setPluginDescriptor(PluginDescriptor descriptor) {
-    }
 
     @UnLoad
     public void onUnload(PluginContext context) {
         System.out.println("ValidSubClassPlugin unloaded");
     }
 
+    @Override
+    public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
+
+    }
+
+    @Override
+    public GoPluginApiResponse handle(GoPluginApiRequest goPluginApiRequest) throws UnhandledRequestTypeException {
+
+        if ("configuration".equals(goPluginApiRequest.requestName())) {
+            return new GetTaskPluginConfig().execute();
+        } else if ("view".equals(goPluginApiRequest.requestName())) {
+            return getViewRequest();
+        }
+        throw new UnhandledRequestTypeException(goPluginApiRequest.requestName());
+    }
+
+
+    private GoPluginApiResponse getViewRequest(){
+        HashMap<String, String> view = new HashMap<>();
+        view.put("displayValue", "Curl");
+        view.put("template", "<html><body>this is a subclass plugin</body></html>");
+
+        return DefaultGoPluginApiResponse.success(new GsonBuilder().create().toJson(view));
+    }
+
+    @Override
+    public GoPluginIdentifier pluginIdentifier() {
+        return new GoPluginIdentifier("task", asList("1.0"));
+    }
 }
