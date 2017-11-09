@@ -73,7 +73,7 @@ public class TestWithSomePluginXmlValues implements GoPlugin {
 
     private GoPluginApiResponse getViewRequest(){
         HashMap<String, String> view = new HashMap<>();
-        view.put("displayValue", "Curl");
+        view.put("displayValue", "TestTask");
         view.put("template", "<html><body>with some plugin xml values</body></html>");
 
         return DefaultGoPluginApiResponse.success(new GsonBuilder().create().toJson(view));

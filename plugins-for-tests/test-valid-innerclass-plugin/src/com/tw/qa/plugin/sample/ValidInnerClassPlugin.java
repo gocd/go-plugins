@@ -82,7 +82,7 @@ public class ValidInnerClassPlugin {
 
         private GoPluginApiResponse getViewRequest(){
             HashMap<String, String> view = new HashMap<>();
-            view.put("displayValue", "Curl");
+            view.put("displayValue", "TestTask");
             view.put("template", "<html><body>this is a inner class plugin</body></html>");
 
             return DefaultGoPluginApiResponse.success(new GsonBuilder().create().toJson(view));
