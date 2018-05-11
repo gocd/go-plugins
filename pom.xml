@@ -29,7 +29,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <go.version>18.5.0</go.version>
+        <go.version>18.6.0</go.version>
         <main.dir>${project.basedir}</main.dir>
     </properties>
 
