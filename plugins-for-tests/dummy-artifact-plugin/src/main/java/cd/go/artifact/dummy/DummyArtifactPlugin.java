@@ -45,13 +45,10 @@ import static java.util.Collections.singletonMap;
 public class DummyArtifactPlugin implements GoPlugin {
     public static final Gson GSON = new Gson();
     public static final Logger LOG = Logger.getLoggerFor(DummyArtifactPlugin.class);
-    private GoApplicationAccessor goApplicationAccessor;
     public static final OkHttpClient CLIENT = new OkHttpClient();
-    public static final MediaType MEDIA_TYPE_BLOB = MediaType.parse("text/x-markdown; charset=utf-8");
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
-        this.goApplicationAccessor = goApplicationAccessor;
     }
 
     @Override
@@ -99,7 +96,7 @@ public class DummyArtifactPlugin implements GoPlugin {
 
     @Override
     public GoPluginIdentifier pluginIdentifier() {
-        return new GoPluginIdentifier("artifact", singletonList("1.0"));
+        return new GoPluginIdentifier("artifact", singletonList("2.0"));
     }
 
     private GoPluginApiResponse fetchArtifact(FetchArtifactRequest fetchArtifactRequest) throws IOException {
@@ -127,7 +124,23 @@ public class DummyArtifactPlugin implements GoPlugin {
 
         Response response = CLIENT.newCall(request).execute();
         if (!response.isRedirect() && response.isSuccessful()) {
-            return DefaultGoPluginApiResponse.success("");
+            return DefaultGoPluginApiResponse.success("[\n" +
+                    "  {\n" +
+                    "    \"name\": \"VAR1\",\n" +
+                    "    \"value\": \"VALUE1\",\n" +
+                    "    \"secure\": true\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"name\": \"VAR2\",\n" +
+                    "    \"value\": \"VALUE2\",\n" +
+                    "    \"secure\": false\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"name\": \"GO_JOB_NAME\",\n" +
+                    "    \"value\": \"new job name\",\n" +
+                    "    \"secure\": false\n" +
+                    "  }\n" +
+                    "]\n");
         }
 
         LOG.error(format("Failed to fetch artifact[%s] with status %d. Error: %s", artifactPath, response.code(), response.body().string()));
