@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+build
+.gradle
+dummy-artifact-plugin.iml
+out
+.idea/libraries
+.idea/inspectionProfiles
+.idea/modules
+.idea/*.xml

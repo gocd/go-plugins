@@ -1,0 +1,33 @@
+<!--
+  ~ Copyright 2018 ThoughtWorks, Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[Url].$error.server}">Go server url:<span class='asterix'>*</span></label>
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[Url].$error.server}" type="text" ng-model="Url" ng-required="true" placeholder="value"/>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[Url].$error.server}" ng-show="GOINPUTNAME[Url].$error.server">{{GOINPUTNAME[Url].$error.server}}</span>
+</div>
+
+<div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[Username].$error.server}">Username:<span class='asterix'>*</span></label>
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[Username].$error.server}" type="text" ng-model="Username" ng-required="true" placeholder="value"/>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[Username].$error.server}" ng-show="GOINPUTNAME[Username].$error.server">{{GOINPUTNAME[Username].$error.server}}</span>
+</div>
+
+<div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[Password].$error.server}">Password:<span class='asterix'>*</span></label>
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[Password].$error.server}" type="password" ng-model="Password" ng-required="true" placeholder="value"/>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[Password].$error.server}" ng-show="GOINPUTNAME[Password].$error.server">{{GOINPUTNAME[Password].$error.server}}</span>
+</div>
