@@ -1,0 +1,73 @@
+/*
+ * Copyright 2018 ThoughtWorks, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+allprojects  {
+    apply plugin: 'maven'
+
+    group = 'com.thoughtworks.go'
+    version = '1.0'
+}
+
+ext {
+    goVersion = '18.10.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenLocal()
+
+        maven { url "https://repo.maven.apache.org/maven2" }
+    }
+
+    dependencies {
+        compileOnly group: 'com.thoughtworks.go', name: 'go-plugin-api', version: project.goVersion
+
+        testCompile group: 'junit', name: 'junit', version:'4.12'
+        testCompile group: 'org.mockito', name: 'mockito-all', version:'2.0.2-beta'
+
+        testImplementation group: 'com.thoughtworks.go', name: 'go-plugin-api', version: project.goVersion
+    }
+
+    jar {
+        preserveFileTimestamps = false
+        reproducibleFileOrder = true
+
+        manifest {
+            attributes "Go-Version": project.goVersion
+        }
+
+        archiveName = "${archivesBaseName}.jar"
+    }
+}
+
+task copyJarsToOnePlace(type: Copy, dependsOn: subprojects.jar) {
+    from(subprojects.jar)
+    into project.file('target/go-plugins-dist/')
+}
+
+clean {
+    delete 'target/'
+}
