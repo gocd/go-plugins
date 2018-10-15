@@ -22,7 +22,7 @@ allprojects  {
 }
 
 ext {
-    goVersion = '18.10.0'
+    goVersion = '18.11.0'
 }
 
 subprojects {
