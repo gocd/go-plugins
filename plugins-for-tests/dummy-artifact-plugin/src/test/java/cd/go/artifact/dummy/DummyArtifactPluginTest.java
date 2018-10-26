@@ -43,7 +43,7 @@ class DummyArtifactPluginTest {
     void shouldReturn1dot0asSupportedVersion() {
         assertThat(new DummyArtifactPlugin().pluginIdentifier().getSupportedExtensionVersions())
                 .hasSize(1)
-                .contains("1.0");
+                .contains("2.0");
     }
 
     @Test
