@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gocd-bundle version="1">
+    <plugins>
+        <plugin id="cd.go.qa.bundle.plugin1">
+            <about>
+                <name>Plugin 1</name>
+                <version>1.0.0</version>
+                <target-go-version>19.5</target-go-version>
+                <description>Example plugin 1</description>
+                <vendor>
+                    <name>ThoughtWorks GoCD Team</name>
+                    <url>www.thoughtworks.com</url>
+                </vendor>
+            </about>
+
+            <extensions>
+                <extension class="com.tw.qa.plugin.sample.Plugin1"/>
+            </extensions>
+        </plugin>
+        <plugin id="cd.go.qa.bundle.plugin2">
+            <about>
+                <name>Plugin 2</name>
+                <version>1.0.0</version>
+                <target-go-version>19.5</target-go-version>
+                <description>Example plugin 2</description>
+                <vendor>
+                    <name>ThoughtWorks GoCD Team</name>
+                    <url>www.thoughtworks.com</url>
+                </vendor>
+            </about>
+
+            <extensions>
+                <extension class="com.tw.qa.plugin.sample.Plugin2"/>
+            </extensions>
+        </plugin>
+    </plugins>
+</gocd-bundle>

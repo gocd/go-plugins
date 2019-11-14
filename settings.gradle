@@ -29,6 +29,10 @@ include ':test-valid-staticclass-plugin'
 include ':test-valid-subclass-plugin'
 include ':test-with-some-plugin-xml-values'
 include ':dummy-artifact-plugin'
+include ':test-plugin-bundle'
+include ':test-plugin-bundle:'
+include ':plugin-1'
+include ':plugin-2'
 
 project(':plugin-common').projectDir = "$rootDir/plugin-common" as File
 project(':invalid-xml-plugin').projectDir = "$rootDir/plugins-for-tests/invalid-xml-plugin" as File
@@ -44,3 +48,6 @@ project(':test-valid-staticclass-plugin').projectDir = "$rootDir/plugins-for-tes
 project(':test-valid-subclass-plugin').projectDir = "$rootDir/plugins-for-tests/test-valid-subclass-plugin" as File
 project(':test-with-some-plugin-xml-values').projectDir = "$rootDir/plugins-for-tests/test-with-some-plugin-xml-values" as File
 project(':dummy-artifact-plugin').projectDir = "$rootDir/plugins-for-tests/dummy-artifact-plugin" as File
+project(':test-plugin-bundle').projectDir = "$rootDir/plugins-for-tests/test-plugin-bundle" as File
+project(':plugin-1').projectDir = "$rootDir/plugins-for-tests/test-plugin-bundle/plugin-1" as File
+project(':plugin-2').projectDir = "$rootDir/plugins-for-tests/test-plugin-bundle/plugin-2" as File
