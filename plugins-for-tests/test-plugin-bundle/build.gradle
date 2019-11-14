@@ -1,0 +1,16 @@
+apply plugin: 'java'
+
+dependencies {
+  compileOnly project(':plugin-1')
+  compileOnly project(':plugin-2')
+}
+
+jar {
+  from(configurations.compileOnly) {
+    into "lib/"
+  }
+
+  from(sourceSets.main.java) {
+    into "/"
+  }
+}
