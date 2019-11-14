@@ -64,8 +64,8 @@ subprojects {
 }
 
 task copyJarsToOnePlace(type: Copy, dependsOn: subprojects.jar) {
-    from(subprojects.jar)
-    into project.file('target/go-plugins-dist/')
+  from(subprojects.findAll { !['plugin-1', 'plugin-2'].contains(it.name) }.jar)
+  into project.file('target/go-plugins-dist/')
 }
 
 clean {
