@@ -17,10 +17,10 @@
 description = 'Test authentication plugin'
 
 dependencies {
-    compile group: 'com.google.code.gson', name: 'gson', version:'2.3.1'
-    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    implementation group: 'com.google.code.gson', name: 'gson', version:'2.3.1'
+    implementation group: 'commons-io', name: 'commons-io', version:'2.4'
 }
 
 jar {
-    from(configurations.runtime.asFileTree.files.findAll { it.name.endsWith('.jar') }.collect { it }) { into 'lib/' }
+    from(configurations.runtimeClasspath.asFileTree.files.findAll { it.name.endsWith('.jar') }.collect { it }) { into 'lib/' }
 }

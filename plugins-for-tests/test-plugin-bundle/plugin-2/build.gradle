@@ -1,9 +1,9 @@
 apply plugin: 'java'
 
 dependencies {
-  compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
-  compile group: 'commons-io', name: 'commons-io', version: '2.4'
-  compile files('lib/dependency.jar')
+  implementation group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+  implementation group: 'commons-io', name: 'commons-io', version: '2.4'
+  implementation files('lib/dependency.jar')
 }
 
 jar {

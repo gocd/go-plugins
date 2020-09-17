@@ -17,9 +17,9 @@
 description = 'plugin-common'
 
 dependencies {
-    compile group: 'com.google.code.gson', name: 'gson', version:'2.5'
+    implementation group: 'com.google.code.gson', name: 'gson', version:'2.5'
 }
 
 jar {
-    from(configurations.runtime.asFileTree.files.findAll { it.name.endsWith('.jar') }.collect { it }) { into 'lib/' }
+    from(configurations.runtimeClasspath.asFileTree.files.findAll { it.name.endsWith('.jar') }.collect { it }) { into 'lib/' }
 }
