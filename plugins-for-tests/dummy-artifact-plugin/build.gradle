@@ -66,6 +66,7 @@ project.ext.pluginDesc = [
 ]
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from("src/main/resources") {
         filesMatching('plugin.xml') {
             expand project.pluginDesc

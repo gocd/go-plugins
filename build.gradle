@@ -15,7 +15,7 @@
  */
 
 allprojects  {
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
     group = 'com.thoughtworks.go'
     version = '1.0'
@@ -58,7 +58,7 @@ subprojects {
             attributes "Go-Version": project.goVersion
         }
 
-        archiveName = "${archivesBaseName}.jar"
+        archiveFileName = "${archivesBaseName}.jar"
     }
 }
 
