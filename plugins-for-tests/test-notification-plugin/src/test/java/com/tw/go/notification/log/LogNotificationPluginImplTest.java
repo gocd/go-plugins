@@ -2,33 +2,33 @@ package com.tw.go.notification.log;
 
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
+import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LogNotificationPluginImplTest {
     @Mock
     private GoApplicationAccessor goApplicationAccessor;
 
     private LogNotificationPluginImpl plugin;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-
+    @BeforeEach
+    public void setUp() {
         plugin = new LogNotificationPluginImpl();
-        when(goApplicationAccessor.submit(plugin.getGoApiRequest(LogNotificationPluginImpl.GET_PLUGIN_SETTINGS, any(String.class)))).thenReturn(getGoApiResponse(new GsonBuilder().create().toJson(getPluginSettingsMap())));
+        when(goApplicationAccessor.submit(any(GoApiRequest.class))).thenReturn(getGoApiResponse(new GsonBuilder().create().toJson(getPluginSettingsMap())));
     }
 
     @Test
@@ -36,11 +36,11 @@ public class LogNotificationPluginImplTest {
         plugin.initializeGoApplicationAccessor(goApplicationAccessor);
 
         Map requestBody = getRequestBodyMap("pipeline-name", "1", "stage-name", "1", "Passed", "Passed");
-        assertThat(plugin.getMessage(getGoPluginApiRequest(requestBody)), is("[pipeline-name|1|stage-name|1|Passed|Passed|value]"));
+        assertThat(plugin.getMessage(getGoPluginApiRequest(requestBody))).isEqualTo("[pipeline-name|1|stage-name|1|Passed|Passed|value]");
     }
 
     private Map<String, String> getPluginSettingsMap() {
-        Map<String, String> pluginSettings = new HashMap<String, String>();
+        Map<String, String> pluginSettings = new HashMap<>();
         pluginSettings.put("append_value", "value");
         return pluginSettings;
     }
