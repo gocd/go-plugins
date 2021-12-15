@@ -8,7 +8,7 @@ A lot of useful information like links to user documentation, design documentati
 ## License
 
 ```plain
-Copyright 2017 ThoughtWorks, Inc.
+Copyright 2021 ThoughtWorks, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
