@@ -31,7 +31,7 @@ subprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
-        options.release = JavaLanguageVersion.of(13).asInt()
+        options.release = JavaLanguageVersion.of(11).asInt()
     }
 
     repositories {
