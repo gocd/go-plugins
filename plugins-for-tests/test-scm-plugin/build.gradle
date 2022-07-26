@@ -17,10 +17,10 @@
 description = 'Test SCM plugin'
 
 dependencies {
-    implementation group: 'com.google.code.gson', name: 'gson', version:'2.3.1'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
     implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version:'3.6.2.201501210735-r'
     implementation group: 'joda-time', name: 'joda-time', version:'2.3'
-    implementation group: 'commons-io', name: 'commons-io', version:'2.4'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'commons-validator', name: 'commons-validator', version:'1.4.0'
 }
 
