@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-allprojects  {
+allprojects {
     apply plugin: 'maven-publish'
 
     group = 'com.thoughtworks.go'
@@ -29,16 +29,18 @@ ext {
     goVersion = '22.2.0'
 
     deps = [
-        assertJ     : 'org.assertj:assertj-core:3.23.1',
-        commonsLang3: 'org.apache.commons:commons-lang3:3.12.0',
-        gson        : 'com.google.code.gson:gson:2.9.0',
-        junit5      : 'org.junit.jupiter:junit-jupiter-api:5.9.0',
-        jsonAssert  : 'org.skyscreamer:jsonassert:1.5.1',
-        mockitoCore : 'org.mockito:mockito-core:4.6.1',
-        okHttp      : 'com.squareup.okhttp3:okhttp:3.10.0',
+        assertJ         : 'org.assertj:assertj-core:3.23.1',
+        commonsLang3    : 'org.apache.commons:commons-lang3:3.12.0',
+        commonsValidator: 'commons-validator:commons-validator:1.4.0',
+        gson            : 'com.google.code.gson:gson:2.9.0',
+        jgit            : 'org.eclipse.jgit:org.eclipse.jgit:3.6.2.201501210735-r',
+        junit5          : 'org.junit.jupiter:junit-jupiter-api:5.9.0',
+        jsonAssert      : 'org.skyscreamer:jsonassert:1.5.1',
+        mockitoCore     : 'org.mockito:mockito-core:4.6.1',
+        okHttp          : 'com.squareup.okhttp3:okhttp:3.10.0',
     ]
 
-    versions = project.ext.deps.collectEntries { lib, libGav -> [lib, versionOf(libGav)]}
+    versions = project.ext.deps.collectEntries { lib, libGav -> [lib, versionOf(libGav)] }
 }
 
 subprojects {
@@ -83,6 +85,6 @@ subprojects {
 }
 
 task copyJarsToOnePlace(type: Copy, dependsOn: subprojects.jar) {
-  from(subprojects.findAll { !['plugin-1', 'plugin-2'].contains(it.name) }.jar)
-  into project.file('target/go-plugins-dist/')
+    from(subprojects.findAll { !['plugin-1', 'plugin-2'].contains(it.name) }.jar)
+    into project.file('target/go-plugins-dist/')
 }

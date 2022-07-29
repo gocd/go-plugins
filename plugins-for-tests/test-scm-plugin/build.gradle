@@ -18,8 +18,8 @@ description = 'Test SCM plugin'
 
 dependencies {
     implementation project.deps.gson
-    implementation 'org.eclipse.jgit:org.eclipse.jgit:3.6.2.201501210735-r'
-    implementation 'commons-validator:commons-validator:1.4.0'
+    implementation project.deps.jgit
+    implementation project.deps.commonsValidator
 }
 
 jar {
