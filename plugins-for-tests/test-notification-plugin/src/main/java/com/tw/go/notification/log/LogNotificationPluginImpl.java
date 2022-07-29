@@ -10,9 +10,10 @@ import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -48,7 +49,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
         } else if (goPluginApiRequest.requestName().equals(PLUGIN_SETTINGS_GET_VIEW)) {
             try {
                 return handleGetPluginSettingsView();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 String message = "Failed to find template: " + e.getMessage();
                 return renderJSON(500, message);
             }
@@ -73,9 +74,9 @@ public class LogNotificationPluginImpl implements GoPlugin {
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
-    private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
+    private GoPluginApiResponse handleGetPluginSettingsView() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/plugin-settings.template.html"), "UTF-8"));
+        response.put("template", Files.readString(Paths.get(getClass().getResource("/plugin-settings.template.html").toURI()), StandardCharsets.UTF_8));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 

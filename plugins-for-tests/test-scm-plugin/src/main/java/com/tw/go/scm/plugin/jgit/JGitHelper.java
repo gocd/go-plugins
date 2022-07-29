@@ -4,7 +4,6 @@ import com.tw.go.scm.plugin.model.GitConfig;
 import com.tw.go.scm.plugin.model.ModifiedFile;
 import com.tw.go.scm.plugin.model.Revision;
 import com.tw.go.scm.plugin.util.StringUtil;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
@@ -24,6 +23,7 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 public class JGitHelper extends GitHelper {
@@ -599,7 +599,7 @@ public class JGitHelper extends GitHelper {
             Git git = Git.wrap(repository);
             git.rm().setCached(true).addFilepattern(folderName).call();
 
-            FileUtils.deleteQuietly(new File(workingDir, folderName));
+            Files.deleteIfExists(workingDir.toPath().resolve(folderName));
         } catch (Exception e) {
             throw new RuntimeException("sub-module remove failed", e);
         } finally {

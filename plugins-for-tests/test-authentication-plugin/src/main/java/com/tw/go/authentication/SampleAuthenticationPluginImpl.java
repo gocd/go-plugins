@@ -9,8 +9,10 @@ import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.apache.commons.io.IOUtils;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +154,7 @@ public class SampleAuthenticationPluginImpl implements GoPlugin {
 
     private String getFileContents(String filePath) {
         try {
-            return IOUtils.toString(getClass().getResource(filePath));
+            return Files.readString(Paths.get(getClass().getResource(filePath).toURI()), StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

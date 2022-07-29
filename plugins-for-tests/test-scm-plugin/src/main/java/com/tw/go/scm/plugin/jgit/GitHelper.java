@@ -2,10 +2,10 @@ package com.tw.go.scm.plugin.jgit;
 
 import com.tw.go.scm.plugin.model.GitConfig;
 import com.tw.go.scm.plugin.model.Revision;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +46,9 @@ public abstract class GitHelper {
     }
 
     private void setupWorkingDir() {
-        FileUtils.deleteQuietly(workingDir);
         try {
-            FileUtils.forceMkdir(workingDir);
+            Files.deleteIfExists(workingDir.toPath());
+            Files.createDirectories(workingDir.toPath());
         } catch (IOException e) {
             new RuntimeException("Could not create directory: " + workingDir.getAbsolutePath());
         }

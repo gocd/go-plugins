@@ -15,11 +15,12 @@ import com.tw.go.scm.plugin.model.ModifiedFile;
 import com.tw.go.scm.plugin.model.Revision;
 import com.tw.go.scm.plugin.util.ListUtil;
 import com.tw.go.scm.plugin.util.StringUtil;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public class GitPluginImpl implements GoPlugin {
         } else if (goPluginApiRequest.requestName().equals(REQUEST_SCM_VIEW)) {
             try {
                 return handleSCMView();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 String message = "Failed to find template: " + e.getMessage();
                 return renderJSON(500, message);
             }
@@ -91,10 +92,10 @@ public class GitPluginImpl implements GoPlugin {
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
-    private GoPluginApiResponse handleSCMView() throws IOException {
+    private GoPluginApiResponse handleSCMView() throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         response.put("displayValue", "JGit");
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/scm.template.html"), "UTF-8"));
+        response.put("template", Files.readString(Paths.get(getClass().getResource("/scm.template.html").toURI()), StandardCharsets.UTF_8));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 

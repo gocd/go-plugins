@@ -17,8 +17,7 @@
 description = 'Test plugin with some plugin XML values'
 
 dependencies {
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    implementation project.deps.gson
     compileOnly project(':test-valid-staticclass-plugin')
     implementation files('lib/dependency.jar')
 }

@@ -21,8 +21,24 @@ allprojects  {
     version = '1.0'
 }
 
+static String versionOf(String dependencySpec) {
+    return dependencySpec.split(':').last()
+}
+
 ext {
     goVersion = '22.2.0'
+
+    deps = [
+        assertJ     : 'org.assertj:assertj-core:3.23.1',
+        commonsLang3: 'org.apache.commons:commons-lang3:3.7',
+        gson        : 'com.google.code.gson:gson:2.9.0',
+        junit5      : 'org.junit.jupiter:junit-jupiter-api:5.9.0',
+        jsonAssert  : 'org.skyscreamer:jsonassert:1.5.0',
+        mockitoCore : 'org.mockito:mockito-core:4.6.1',
+        okHttp      : 'com.squareup.okhttp3:okhttp:3.10.0',
+    ]
+
+    versions = project.ext.deps.collectEntries { lib, libGav -> [lib, versionOf(libGav)]}
 }
 
 subprojects {
@@ -42,11 +58,11 @@ subprojects {
     dependencies {
         compileOnly "com.thoughtworks.go:go-plugin-api:${project.goVersion}"
 
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
-        testImplementation 'org.assertj:assertj-core:3.23.1'
-        testImplementation 'org.mockito:mockito-core:4.6.1'
-        testImplementation 'org.mockito:mockito-junit-jupiter:4.6.1'
+        testImplementation project.deps.junit5
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project.versions.junit5}"
+        testImplementation project.deps.assertJ
+        testImplementation project.deps.mockitoCore
+        testImplementation "org.mockito:mockito-junit-jupiter:${project.versions.mockitoCore}"
         testImplementation "com.thoughtworks.go:go-plugin-api:${project.goVersion}"
     }
 
