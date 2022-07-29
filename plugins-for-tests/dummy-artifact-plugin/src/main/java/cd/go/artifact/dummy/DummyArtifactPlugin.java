@@ -122,29 +122,30 @@ public class DummyArtifactPlugin implements GoPlugin {
                 .addHeader("Confirm", "true")
                 .build();
 
-        Response response = CLIENT.newCall(request).execute();
-        if (!response.isRedirect() && response.isSuccessful()) {
-            return DefaultGoPluginApiResponse.success("[\n" +
-                    "  {\n" +
-                    "    \"name\": \"VAR1\",\n" +
-                    "    \"value\": \"VALUE1\",\n" +
-                    "    \"secure\": true\n" +
-                    "  },\n" +
-                    "  {\n" +
-                    "    \"name\": \"VAR2\",\n" +
-                    "    \"value\": \"VALUE2\",\n" +
-                    "    \"secure\": false\n" +
-                    "  },\n" +
-                    "  {\n" +
-                    "    \"name\": \"GO_JOB_NAME\",\n" +
-                    "    \"value\": \"new job name\",\n" +
-                    "    \"secure\": false\n" +
-                    "  }\n" +
-                    "]\n");
-        }
+        try (Response response = CLIENT.newCall(request).execute()) {
+            if (!response.isRedirect() && response.isSuccessful()) {
+                return DefaultGoPluginApiResponse.success("[\n" +
+                        "  {\n" +
+                        "    \"name\": \"VAR1\",\n" +
+                        "    \"value\": \"VALUE1\",\n" +
+                        "    \"secure\": true\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"name\": \"VAR2\",\n" +
+                        "    \"value\": \"VALUE2\",\n" +
+                        "    \"secure\": false\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"name\": \"GO_JOB_NAME\",\n" +
+                        "    \"value\": \"new job name\",\n" +
+                        "    \"secure\": false\n" +
+                        "  }\n" +
+                        "]\n");
+            }
 
-        LOG.error(format("Failed to fetch artifact[%s] with status %d. Error: %s", artifactPath, response.code(), response.body().string()));
-        return DefaultGoPluginApiResponse.error(response.body().string());
+            LOG.error(format("Failed to fetch artifact[%s] with status %d. Error: %s", artifactPath, response.code(), response.body().string()));
+            return DefaultGoPluginApiResponse.error(response.body().string());
+        }
     }
 
     private GoPluginApiResponse publishArtifact(PublishArtifactRequest publishArtifactRequest) {
