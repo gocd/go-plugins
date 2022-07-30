@@ -15,12 +15,11 @@ import com.tw.go.scm.plugin.model.ModifiedFile;
 import com.tw.go.scm.plugin.model.Revision;
 import com.tw.go.scm.plugin.util.ListUtil;
 import com.tw.go.scm.plugin.util.StringUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +59,7 @@ public class GitPluginImpl implements GoPlugin {
         } else if (goPluginApiRequest.requestName().equals(REQUEST_SCM_VIEW)) {
             try {
                 return handleSCMView();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 String message = "Failed to find template: " + e.getMessage();
                 return renderJSON(500, message);
             }
@@ -84,7 +83,7 @@ public class GitPluginImpl implements GoPlugin {
     }
 
     private GoPluginApiResponse handleSCMConfiguration() {
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put("url", createField("URL", null, true, true, false, "0"));
         response.put("username", createField("Username", null, false, false, false, "1"));
         response.put("password", createField("Password", null, false, false, true, "2"));
@@ -92,10 +91,10 @@ public class GitPluginImpl implements GoPlugin {
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
-    private GoPluginApiResponse handleSCMView() throws Exception {
-        Map<String, Object> response = new HashMap<String, Object>();
+    private GoPluginApiResponse handleSCMView() throws IOException {
+        Map<String, Object> response = new HashMap<>();
         response.put("displayValue", "JGit");
-        response.put("template", Files.readString(Paths.get(getClass().getResource("/scm.template.html").toURI()), StandardCharsets.UTF_8));
+        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/scm.template.html"), "UTF-8"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
@@ -104,14 +103,9 @@ public class GitPluginImpl implements GoPlugin {
         Map<String, String> configuration = keyValuePairs(responseMap, "scm-configuration");
         final GitConfig gitConfig = getGitConfig(configuration);
 
-        List<Map<String, Object>> response = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> response = new ArrayList<>();
 
-        validate(response, new FieldValidator() {
-            @Override
-            public void validate(Map<String, Object> fieldValidation) {
-                validateUrl(gitConfig, fieldValidation);
-            }
-        });
+        validate(response, fieldValidation -> validateUrl(gitConfig, fieldValidation));
 
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
@@ -121,8 +115,8 @@ public class GitPluginImpl implements GoPlugin {
         Map<String, String> configuration = keyValuePairs(responseMap, "scm-configuration");
         GitConfig gitConfig = getGitConfig(configuration);
 
-        Map<String, Object> response = new HashMap<String, Object>();
-        ArrayList<String> messages = new ArrayList<String>();
+        Map<String, Object> response = new HashMap<>();
+        ArrayList<String> messages = new ArrayList<>();
 
         checkConnection(gitConfig, response, messages);
 
@@ -142,7 +136,7 @@ public class GitPluginImpl implements GoPlugin {
 
         LOGGER.warn("flyweight: " + flyweightFolder);
 
-        Map<String, Object> fieldMap = new HashMap<String, Object>();
+        Map<String, Object> fieldMap = new HashMap<>();
         validateUrl(gitConfig, fieldMap);
         if (!fieldMap.isEmpty()) {
             LOGGER.warn("invalid url");
@@ -157,7 +151,7 @@ public class GitPluginImpl implements GoPlugin {
             if (revision == null) {
                 return renderJSON(SUCCESS_RESPONSE_CODE, null);
             } else {
-                Map<String, Object> response = new HashMap<String, Object>();
+                Map<String, Object> response = new HashMap<>();
                 Map<String, Object> revisionMap = getRevisionMap(revision);
                 response.put("revision", revisionMap);
                 return renderJSON(SUCCESS_RESPONSE_CODE, response);
@@ -178,7 +172,7 @@ public class GitPluginImpl implements GoPlugin {
 
         LOGGER.warn("flyweight: " + flyweightFolder + ". previous commit: " + previousRevision);
 
-        Map<String, Object> fieldMap = new HashMap<String, Object>();
+        Map<String, Object> fieldMap = new HashMap<>();
         validateUrl(gitConfig, fieldMap);
         if (!fieldMap.isEmpty()) {
             LOGGER.warn("invalid url");
@@ -195,8 +189,8 @@ public class GitPluginImpl implements GoPlugin {
             } else {
                 LOGGER.warn("new commits: " + newerRevisions.size());
 
-                Map<String, Object> response = new HashMap<String, Object>();
-                List<Map> revisions = new ArrayList<Map>();
+                Map<String, Object> response = new HashMap<>();
+                List<Map> revisions = new ArrayList<>();
                 for (Revision revisionObj : newerRevisions) {
                     Map<String, Object> revisionMap = getRevisionMap(revisionObj);
                     revisions.add(revisionMap);
@@ -225,8 +219,8 @@ public class GitPluginImpl implements GoPlugin {
             git.cloneOrFetch();
             git.resetHard(revision);
 
-            Map<String, Object> response = new HashMap<String, Object>();
-            ArrayList<String> messages = new ArrayList<String>();
+            Map<String, Object> response = new HashMap<>();
+            ArrayList<String> messages = new ArrayList<>();
             response.put("status", "success");
             messages.add("Checked out to revision " + revision);
             response.put("messages", messages);
@@ -252,7 +246,7 @@ public class GitPluginImpl implements GoPlugin {
     }
 
     private void validate(List<Map<String, Object>> response, FieldValidator fieldValidator) {
-        Map<String, Object> fieldValidation = new HashMap<String, Object>();
+        Map<String, Object> fieldValidation = new HashMap<>();
         fieldValidator.validate(fieldValidation);
         if (!fieldValidation.isEmpty()) {
             response.add(fieldValidation);
@@ -260,15 +254,15 @@ public class GitPluginImpl implements GoPlugin {
     }
 
     private Map<String, Object> getRevisionMap(Revision revision) {
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put("revision", revision.getRevision());
         response.put("timestamp", new SimpleDateFormat(DATE_PATTERN).format(revision.getTimestamp()));
         response.put("user", revision.getUser());
         response.put("revisionComment", revision.getComment());
-        List<Map> modifiedFilesMapList = new ArrayList<Map>();
+        List<Map> modifiedFilesMapList = new ArrayList<>();
         if (!ListUtil.isEmpty(revision.getModifiedFiles())) {
             for (ModifiedFile modifiedFile : revision.getModifiedFiles()) {
-                Map<String, String> modifiedFileMap = new HashMap<String, String>();
+                Map<String, String> modifiedFileMap = new HashMap<>();
                 modifiedFileMap.put("fileName", modifiedFile.getFileName());
                 modifiedFileMap.put("action", modifiedFile.getAction());
                 modifiedFilesMapList.add(modifiedFileMap);
@@ -279,7 +273,7 @@ public class GitPluginImpl implements GoPlugin {
     }
 
     private Map<String, String> keyValuePairs(Map<String, Object> map, String mainKey) {
-        Map<String, String> keyValuePairs = new HashMap<String, String>();
+        Map<String, String> keyValuePairs = new HashMap<>();
         Map<String, Object> fieldsMap = (Map<String, Object>) map.get(mainKey);
         for (String field : fieldsMap.keySet()) {
             Map<String, Object> fieldProperties = (Map<String, Object>) fieldsMap.get(field);
@@ -290,7 +284,7 @@ public class GitPluginImpl implements GoPlugin {
     }
 
     private Map<String, Object> createField(String displayName, String defaultValue, boolean isPartOfIdentity, boolean isRequired, boolean isSecure, String displayOrder) {
-        Map<String, Object> fieldProperties = new HashMap<String, Object>();
+        Map<String, Object> fieldProperties = new HashMap<>();
         fieldProperties.put("display-name", displayName);
         fieldProperties.put("default-value", defaultValue);
         fieldProperties.put("part-of-identity", isPartOfIdentity);

@@ -10,10 +10,9 @@ import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
+import org.apache.commons.io.IOUtils;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -49,7 +48,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
         } else if (goPluginApiRequest.requestName().equals(PLUGIN_SETTINGS_GET_VIEW)) {
             try {
                 return handleGetPluginSettingsView();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 String message = "Failed to find template: " + e.getMessage();
                 return renderJSON(500, message);
             }
@@ -74,9 +73,9 @@ public class LogNotificationPluginImpl implements GoPlugin {
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
-    private GoPluginApiResponse handleGetPluginSettingsView() throws Exception {
+    private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
         Map<String, Object> response = new HashMap<String, Object>();
-        response.put("template", Files.readString(Paths.get(getClass().getResource("/plugin-settings.template.html").toURI()), StandardCharsets.UTF_8));
+        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/plugin-settings.template.html"), "UTF-8"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
@@ -85,12 +84,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
         final Map<String, String> configuration = keyValuePairs(responseMap, "plugin-settings");
         List<Map<String, Object>> response = new ArrayList<Map<String, Object>>();
 
-        validate(response, new FieldValidator() {
-            @Override
-            public void validate(Map<String, Object> fieldValidation) {
-                validateValue(configuration, fieldValidation);
-            }
-        });
+        validate(response, fieldValidation -> validateValue(configuration, fieldValidation));
 
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
