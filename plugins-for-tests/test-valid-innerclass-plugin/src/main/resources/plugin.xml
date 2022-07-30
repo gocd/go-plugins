@@ -6,7 +6,7 @@
         <target-go-version>15.1.0</target-go-version>
         <description>Test plugin with valid innerclass</description>
         <vendor>
-            <name>ThoughtWorks</name>
+            <name>GoCD Team</name>
             <url>https://github.com/gocd/go-plugins</url>
         </vendor>
     </about>
