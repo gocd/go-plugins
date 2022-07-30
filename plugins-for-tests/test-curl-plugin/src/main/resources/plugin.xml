@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- *************************GO-LICENSE-START******************************
- * Copyright 2021 ThoughtWorks, Inc.
+ * Copyright 2021 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
            Task plugin that supports configuration and execution of curl tasks in Go
         </description>
         <vendor>
-            <name>ThoughtWorks Go Team</name>
+            <name>Thoughtworks Go Team</name>
             <url>www.thoughtworks.com</url>
         </vendor>
         <target-os>
