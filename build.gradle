@@ -37,7 +37,7 @@ ext {
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r',
         junit5          : 'org.junit.jupiter:junit-jupiter-api:5.9.1',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.1',
-        mockitoCore     : 'org.mockito:mockito-core:4.10.0',
+        mockitoCore     : 'org.mockito:mockito-core:4.11.0',
         okHttp          : 'com.squareup.okhttp3:okhttp:4.10.0',
     ]
 
