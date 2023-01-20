@@ -29,7 +29,7 @@ ext {
     goVersion = '23.1.0'
 
     deps = [
-        assertJ         : 'org.assertj:assertj-core:3.24.1',
+        assertJ         : 'org.assertj:assertj-core:3.24.2',
         commonsLang3    : 'org.apache.commons:commons-lang3:3.12.0',
         commonsIO       : 'commons-io:commons-io:2.11.0',
         commonsValidator: 'commons-validator:commons-validator:1.7',
