@@ -34,7 +34,7 @@ ext {
         commonsIO       : 'commons-io:commons-io:2.11.0',
         commonsValidator: 'commons-validator:commons-validator:1.7',
         gson            : 'com.google.code.gson:gson:2.10.1',
-        jgit            : 'org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r',
+        jgit            : 'org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r',
         junit5          : 'org.junit.jupiter:junit-jupiter-api:5.9.2',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.1',
         mockitoCore     : 'org.mockito:mockito-core:5.1.1',
