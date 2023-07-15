@@ -21,7 +21,6 @@ include ':plugin-with-invalid-id'
 include ':plugin-with-multiple-load-methods'
 include ':test-curl-plugin'
 include ':test-notification-plugin'
-include ':test-authentication-plugin'
 include ':test-scm-plugin'
 include ':test-donothing-plugin'
 include ':test-valid-innerclass-plugin'
@@ -40,7 +39,6 @@ project(':plugin-with-invalid-id').projectDir = "$rootDir/plugins-for-tests/plug
 project(':plugin-with-multiple-load-methods').projectDir = "$rootDir/plugins-for-tests/plugin-with-multiple-load-methods" as File
 project(':test-curl-plugin').projectDir = "$rootDir/plugins-for-tests/test-curl-plugin" as File
 project(':test-notification-plugin').projectDir = "$rootDir/plugins-for-tests/test-notification-plugin" as File
-project(':test-authentication-plugin').projectDir = "$rootDir/plugins-for-tests/test-authentication-plugin" as File
 project(':test-scm-plugin').projectDir = "$rootDir/plugins-for-tests/test-scm-plugin" as File
 project(':test-donothing-plugin').projectDir = "$rootDir/plugins-for-tests/test-donothing-plugin" as File
 project(':test-valid-innerclass-plugin').projectDir = "$rootDir/plugins-for-tests/test-valid-innerclass-plugin" as File
