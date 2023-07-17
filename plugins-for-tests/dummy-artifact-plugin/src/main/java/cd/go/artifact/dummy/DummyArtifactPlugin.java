@@ -143,8 +143,9 @@ public class DummyArtifactPlugin implements GoPlugin {
                         "]\n");
             }
 
-            LOG.error(format("Failed to fetch artifact[%s] with status %d. Error: %s", artifactPath, response.code(), response.body().string()));
-            return DefaultGoPluginApiResponse.error(response.body().string());
+            String errorBody = response.body().string();
+            LOG.error(format("Failed to fetch artifact[%s] with status %d. Error: %s", artifactPath, response.code(), errorBody));
+            return DefaultGoPluginApiResponse.error(errorBody);
         }
     }
 
@@ -200,8 +201,9 @@ public class DummyArtifactPlugin implements GoPlugin {
                 return DefaultGoPluginApiResponse.success(GSON.toJson(singletonMap("metadata", new PublishMetadata(artifactConfig.getSource(), jobIdentifier))));
             }
 
-            LOG.error(format("Failed to upload artifact[%s] with status %d. Error: %s", artifactConfig.getSource(), response.code(), response.body().string()));
-            return DefaultGoPluginApiResponse.error(response.body().string());
+            String errorBody = response.body().string();
+            LOG.error(format("Failed to upload artifact[%s] with status %d. Error: %s", artifactConfig.getSource(), response.code(), errorBody));
+            return DefaultGoPluginApiResponse.error(errorBody);
         } catch (Exception e) {
             LOG.error(format("Failed to upload artifact[%s] Error: %s", artifactConfig.getSource(), e.getMessage()));
             return DefaultGoPluginApiResponse.error(e.getMessage());
