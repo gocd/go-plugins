@@ -15,16 +15,14 @@ import com.tw.go.scm.plugin.model.ModifiedFile;
 import com.tw.go.scm.plugin.model.Revision;
 import com.tw.go.scm.plugin.util.ListUtil;
 import com.tw.go.scm.plugin.util.StringUtil;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -94,7 +92,9 @@ public class GitPluginImpl implements GoPlugin {
     private GoPluginApiResponse handleSCMView() throws IOException {
         Map<String, Object> response = new HashMap<>();
         response.put("displayValue", "JGit");
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/scm.template.html"), "UTF-8"));
+        try (InputStream settings = Objects.requireNonNull(getClass().getResourceAsStream("/scm.template.html"))) {
+            response.put("template", new String(settings.readAllBytes(), StandardCharsets.UTF_8));
+        }
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 

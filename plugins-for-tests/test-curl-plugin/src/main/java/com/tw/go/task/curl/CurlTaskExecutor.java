@@ -67,7 +67,7 @@ public class CurlTaskExecutor implements TaskExecutor {
         String destinationFilePath = taskContext.workingDir() + "/" + CURLED_FILE;
         String url = taskConfig.getValue(CurlTask.URL_PROPERTY);
 
-        List<String> command = new ArrayList<String>();
+        List<String> command = new ArrayList<>();
         command.add("curl");
         command.add(requestType);
         if (secureConnection.equals("no")) {

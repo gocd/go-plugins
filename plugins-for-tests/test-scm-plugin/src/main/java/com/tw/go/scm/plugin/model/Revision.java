@@ -78,7 +78,7 @@ public class Revision {
     public final ModifiedFile createModifiedFile(String filename, String action) {
         ModifiedFile file = new ModifiedFile(filename, action);
         if (ListUtil.isEmpty(modifiedFiles)) {
-            modifiedFiles = new ArrayList<ModifiedFile>();
+            modifiedFiles = new ArrayList<>();
         }
         modifiedFiles.add(file);
         return file;

@@ -10,9 +10,10 @@ import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -68,21 +69,23 @@ public class LogNotificationPluginImpl implements GoPlugin {
     }
 
     private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put("append_value", createField("Append Value", null, true, false, "0"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
     private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
-        Map<String, Object> response = new HashMap<String, Object>();
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/plugin-settings.template.html"), "UTF-8"));
+        Map<String, Object> response = new HashMap<>();
+        try (InputStream settings = Objects.requireNonNull(getClass().getResourceAsStream("/plugin-settings.template.html"))) {
+            response.put("template", new String(settings.readAllBytes(), StandardCharsets.UTF_8));
+        }
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
     private GoPluginApiResponse handleValidatePluginSettingsConfiguration(GoPluginApiRequest goPluginApiRequest) {
         Map<String, Object> responseMap = getMapFor(goPluginApiRequest);
         final Map<String, String> configuration = keyValuePairs(responseMap, "plugin-settings");
-        List<Map<String, Object>> response = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> response = new ArrayList<>();
 
         validate(response, fieldValidation -> validateValue(configuration, fieldValidation));
 
@@ -97,15 +100,15 @@ public class LogNotificationPluginImpl implements GoPlugin {
     }
 
     private GoPluginApiResponse handleNotificationsInterestedIn() {
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put("notifications", Arrays.asList(REQUEST_STAGE_STATUS));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
     private GoPluginApiResponse handleStageNotification(GoPluginApiRequest goPluginApiRequest) {
         int responseCode = SUCCESS_RESPONSE_CODE;
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<String> messages = new ArrayList<String>();
+        Map<String, Object> response = new HashMap<>();
+        List<String> messages = new ArrayList<>();
         try {
             String message = getMessage(goPluginApiRequest);
 
@@ -153,7 +156,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
     }
 
     private String requestWithPluginId() {
-        Map<String, String> requestMap = new HashMap<String, String>();
+        Map<String, String> requestMap = new HashMap<>();
         requestMap.put("plugin-id", PLUGIN_ID);
         return new GsonBuilder().create().toJson(requestMap);
     }
@@ -163,7 +166,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
     }
 
     private Map<String, Object> createField(String displayName, String defaultValue, boolean isRequired, boolean isSecure, String displayOrder) {
-        Map<String, Object> fieldProperties = new HashMap<String, Object>();
+        Map<String, Object> fieldProperties = new HashMap<>();
         fieldProperties.put("display-name", displayName);
         fieldProperties.put("default-value", defaultValue);
         fieldProperties.put("required", isRequired);
@@ -173,7 +176,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
     }
 
     private Map<String, String> keyValuePairs(Map<String, Object> map, String mainKey) {
-        Map<String, String> keyValuePairs = new HashMap<String, String>();
+        Map<String, String> keyValuePairs = new HashMap<>();
         Map<String, Object> fieldsMap = (Map<String, Object>) map.get(mainKey);
         for (String field : fieldsMap.keySet()) {
             Map<String, Object> fieldProperties = (Map<String, Object>) fieldsMap.get(field);
@@ -184,7 +187,7 @@ public class LogNotificationPluginImpl implements GoPlugin {
     }
 
     private void validate(List<Map<String, Object>> response, FieldValidator fieldValidator) {
-        Map<String, Object> fieldValidation = new HashMap<String, Object>();
+        Map<String, Object> fieldValidation = new HashMap<>();
         fieldValidator.validate(fieldValidation);
         if (!fieldValidation.isEmpty()) {
             response.add(fieldValidation);

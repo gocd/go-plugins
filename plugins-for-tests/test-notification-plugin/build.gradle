@@ -18,7 +18,6 @@ description = 'Test notification plugin'
 
 dependencies {
     implementation project.deps.gson
-    implementation project.deps.commonsIO
 }
 
 jar {

@@ -19,7 +19,6 @@ description = 'Test SCM plugin'
 dependencies {
     implementation project.deps.gson
     implementation project.deps.jgit
-    implementation project.deps.commonsIO
     implementation project.deps.commonsValidator
 }
 
