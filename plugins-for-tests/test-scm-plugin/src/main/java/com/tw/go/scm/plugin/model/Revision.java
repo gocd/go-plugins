@@ -14,10 +14,6 @@ public class Revision {
     private String emailId;
     private List<ModifiedFile> modifiedFiles;
 
-    public Revision(String revision) {
-        this.revision = revision;
-    }
-
     public Revision(String revision, Date timestamp, String comment, String user, String emailId, List<ModifiedFile> modifiedFiles) {
         this.revision = revision;
         this.timestamp = timestamp;
@@ -75,12 +71,4 @@ public class Revision {
         this.modifiedFiles = modifiedFiles;
     }
 
-    public final ModifiedFile createModifiedFile(String filename, String action) {
-        ModifiedFile file = new ModifiedFile(filename, action);
-        if (ListUtil.isEmpty(modifiedFiles)) {
-            modifiedFiles = new ArrayList<>();
-        }
-        modifiedFiles.add(file);
-        return file;
-    }
 }
