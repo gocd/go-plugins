@@ -15,11 +15,11 @@ import com.tw.go.scm.plugin.model.ModifiedFile;
 import com.tw.go.scm.plugin.model.Revision;
 import com.tw.go.scm.plugin.util.ListUtil;
 import com.tw.go.scm.plugin.util.StringUtil;
-import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -351,7 +351,12 @@ public class GitPluginImpl implements GoPlugin {
     }
 
     private boolean isValidURL(String url) {
-        return new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(url);
+        try {
+            new URL(url).toURI();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private GoPluginApiResponse renderJSON(final int responseCode, Object response) {
