@@ -19,7 +19,6 @@ package cd.go.artifact.dummy.model;
 import cd.go.artifact.dummy.config.Field;
 import cd.go.artifact.dummy.config.Metadata;
 import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 
@@ -47,15 +46,15 @@ public class ArtifactStoreConfig {
 
     public ValidationResult validate() {
         ValidationResult result = new ValidationResult();
-        if (StringUtils.isBlank(url)) {
+        if (url == null || url.isBlank()) {
             result.addError("Url", "must be provided.");
         }
 
-        if (StringUtils.isBlank(username)) {
+        if (username == null || username.isBlank()) {
             result.addError("Username", "must be provided.");
         }
 
-        if (StringUtils.isBlank(password)) {
+        if (password == null || password.isBlank()) {
             result.addError("Password", "must be provided.");
         }
 

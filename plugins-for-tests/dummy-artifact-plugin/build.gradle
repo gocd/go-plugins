@@ -19,7 +19,6 @@ description = 'Dummy artifact plugin'
 
 dependencies {
     implementation project.deps.gson
-    implementation project.deps.commonsLang3
     implementation project.deps.okHttp
 
     testImplementation project.deps.jsonAssert

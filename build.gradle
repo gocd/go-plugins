@@ -30,7 +30,6 @@ ext {
 
     deps = [
         assertJ         : 'org.assertj:assertj-core:3.24.2',
-        commonsLang3    : 'org.apache.commons:commons-lang3:3.14.0',
         commonsIO       : 'commons-io:commons-io:2.15.1',
         commonsValidator: 'commons-validator:commons-validator:1.8.0',
         gson            : 'com.google.code.gson:gson:2.10.1',

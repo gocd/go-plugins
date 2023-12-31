@@ -19,7 +19,6 @@ package cd.go.artifact.dummy.model;
 import cd.go.artifact.dummy.config.Field;
 import cd.go.artifact.dummy.config.Metadata;
 import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 
@@ -45,7 +44,7 @@ public class FetchArtifact {
 
     public ValidationResult validate() {
         ValidationResult result = new ValidationResult();
-        if (StringUtils.isBlank(path)) {
+        if (path == null || path.isBlank()) {
             result.addError("Path", "must be provided.");
         }
         return result;
