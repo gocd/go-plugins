@@ -22,7 +22,7 @@ import static cd.go.artifact.dummy.DummyArtifactPlugin.GSON;
 import static cd.go.artifact.dummy.ResourceReader.read;
 
 public class View {
-    private String viewPath;
+    private final String viewPath;
 
     public View(String viewPath) {
         this.viewPath = viewPath;

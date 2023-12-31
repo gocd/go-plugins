@@ -17,8 +17,8 @@
 package cd.go.artifact.dummy.config;
 
 public class Field {
-    private String key;
-    private Metadata metadata;
+    private final String key;
+    private final Metadata metadata;
 
     public Field(String key, Metadata metadata) {
         this.key = key;

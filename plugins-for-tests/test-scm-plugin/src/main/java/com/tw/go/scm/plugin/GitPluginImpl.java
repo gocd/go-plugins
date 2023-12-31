@@ -28,7 +28,7 @@ import static java.util.Arrays.asList;
 
 @Extension
 public class GitPluginImpl implements GoPlugin {
-    private static Logger LOGGER = Logger.getLoggerFor(GitPluginImpl.class);
+    private static final Logger LOGGER = Logger.getLoggerFor(GitPluginImpl.class);
 
     public static final String EXTENSION_NAME = "scm";
     private static final List<String> goSupportedVersions = asList("1.0");

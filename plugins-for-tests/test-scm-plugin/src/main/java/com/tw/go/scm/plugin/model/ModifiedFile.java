@@ -1,8 +1,8 @@
 package com.tw.go.scm.plugin.model;
 
 public class ModifiedFile {
-    private String fileName;
-    private String action;
+    private final String fileName;
+    private final String action;
 
     public ModifiedFile(String fileName, String action) {
         this.fileName = fileName;

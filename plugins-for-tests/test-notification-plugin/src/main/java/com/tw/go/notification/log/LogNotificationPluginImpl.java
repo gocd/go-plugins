@@ -20,7 +20,7 @@ import static java.util.Arrays.asList;
 
 @Extension
 public class LogNotificationPluginImpl implements GoPlugin {
-    private static Logger LOGGER = Logger.getLoggerFor(LogNotificationPluginImpl.class);
+    private static final Logger LOGGER = Logger.getLoggerFor(LogNotificationPluginImpl.class);
 
     public static final String PLUGIN_ID = "log.notifier";
     public static final String EXTENSION_NAME = "notification";

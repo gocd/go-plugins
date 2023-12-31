@@ -17,8 +17,8 @@
 package cd.go.artifact.dummy.config;
 
 public class Metadata {
-    private boolean required;
-    private boolean secure;
+    private final boolean required;
+    private final boolean secure;
 
     public Metadata(boolean required, boolean secure) {
         this.required = required;
