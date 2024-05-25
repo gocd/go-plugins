@@ -66,6 +66,7 @@ subprojects {
 
         testImplementation project.deps.junit5
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project.versions.junit5}"
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
         testImplementation project.deps.assertJ
         testImplementation project.deps.mockitoCore
         testImplementation "org.mockito:mockito-junit-jupiter:${project.versions.mockitoCore}"
@@ -80,7 +81,7 @@ subprojects {
             attributes "Go-Version": project.goVersion
         }
 
-        archiveFileName = "${base.archivesBaseName}.jar"
+        archiveFileName = "${project.name}.jar"
     }
 
     test {
