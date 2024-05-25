@@ -30,6 +30,7 @@ ext {
 
     deps = [
         assertJ         : 'org.assertj:assertj-core:3.25.3',
+        goPluginApi     : "cd.go.plugin:go-plugin-api:24.1.0",
         gson            : 'com.google.code.gson:gson:2.11.0',
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:6.9.0.202403050737-r',
         junit5          : 'org.junit.jupiter:junit-jupiter-api:5.10.2',
@@ -45,6 +46,11 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
 
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
         options.release = JavaLanguageVersion.of(17).asInt()
@@ -56,14 +62,14 @@ subprojects {
     }
 
     dependencies {
-        compileOnly "com.thoughtworks.go:go-plugin-api:${project.goVersion}"
+        compileOnly project.deps.goPluginApi
 
         testImplementation project.deps.junit5
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project.versions.junit5}"
         testImplementation project.deps.assertJ
         testImplementation project.deps.mockitoCore
         testImplementation "org.mockito:mockito-junit-jupiter:${project.versions.mockitoCore}"
-        testImplementation "com.thoughtworks.go:go-plugin-api:${project.goVersion}"
+        testImplementation project.deps.goPluginApi
     }
 
     jar {

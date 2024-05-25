@@ -19,7 +19,6 @@ include ':plugin-common'
 include ':invalid-xml-plugin'
 include ':plugin-with-invalid-id'
 include ':plugin-with-multiple-load-methods'
-include ':test-curl-plugin'
 include ':test-notification-plugin'
 include ':test-scm-plugin'
 include ':test-donothing-plugin'
@@ -37,7 +36,6 @@ project(':plugin-common').projectDir = "$rootDir/plugin-common" as File
 project(':invalid-xml-plugin').projectDir = "$rootDir/plugins-for-tests/invalid-xml-plugin" as File
 project(':plugin-with-invalid-id').projectDir = "$rootDir/plugins-for-tests/plugin-with-invalid-id" as File
 project(':plugin-with-multiple-load-methods').projectDir = "$rootDir/plugins-for-tests/plugin-with-multiple-load-methods" as File
-project(':test-curl-plugin').projectDir = "$rootDir/plugins-for-tests/test-curl-plugin" as File
 project(':test-notification-plugin').projectDir = "$rootDir/plugins-for-tests/test-notification-plugin" as File
 project(':test-scm-plugin').projectDir = "$rootDir/plugins-for-tests/test-scm-plugin" as File
 project(':test-donothing-plugin').projectDir = "$rootDir/plugins-for-tests/test-donothing-plugin" as File
