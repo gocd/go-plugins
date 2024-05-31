@@ -29,7 +29,7 @@ ext {
     goVersion = '24.1.0'
 
     deps = [
-        assertJ         : 'org.assertj:assertj-core:3.25.3',
+        assertJ         : 'org.assertj:assertj-core:3.26.0',
         goPluginApi     : "cd.go.plugin:go-plugin-api:${project.ext.goVersion}",
         gson            : 'com.google.code.gson:gson:2.11.0',
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:6.9.0.202403050737-r',
