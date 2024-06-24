@@ -26,11 +26,10 @@ static String versionOf(String dependencySpec) {
 }
 
 ext {
-    goVersion = project.hasProperty('goVersion') ? project.goVersion : '24.3.0'
+    goVersion = '24.3.0'
 
     deps = [
         assertJ         : 'org.assertj:assertj-core:3.26.0',
-        goPluginApi     : "cd.go.plugin:go-plugin-api:${project.goVersion}",
         gson            : 'com.google.code.gson:gson:2.11.0',
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:6.10.0.202406032230-r',
         junit5          : 'org.junit.jupiter:junit-jupiter-api:5.10.2',
@@ -62,7 +61,7 @@ subprojects {
     }
 
     dependencies {
-        compileOnly project.deps.goPluginApi
+        compileOnly "cd.go.plugin:go-plugin-api:${project.goVersion}"
 
         testImplementation project.deps.junit5
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project.versions.junit5}"
@@ -70,7 +69,7 @@ subprojects {
         testImplementation project.deps.assertJ
         testImplementation project.deps.mockitoCore
         testImplementation "org.mockito:mockito-junit-jupiter:${project.versions.mockitoCore}"
-        testImplementation project.deps.goPluginApi
+        testImplementation "cd.go.plugin:go-plugin-api:${project.goVersion}"
     }
 
     jar {
