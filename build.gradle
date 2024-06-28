@@ -32,7 +32,7 @@ ext {
         assertJ         : 'org.assertj:assertj-core:3.26.0',
         gson            : 'com.google.code.gson:gson:2.11.0',
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:6.10.0.202406032230-r',
-        junit5          : 'org.junit.jupiter:junit-jupiter-api:5.10.2',
+        junit5          : 'org.junit.jupiter:junit-jupiter-api:5.10.3',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.1',
         mockitoCore     : 'org.mockito:mockito-core:5.12.0',
         okHttp          : 'com.squareup.okhttp3:okhttp:4.12.0',
