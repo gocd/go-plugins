@@ -26,7 +26,7 @@ static String versionOf(String dependencySpec) {
 }
 
 ext {
-    goVersion = '24.4.0'
+    goVersion = '24.5.0'
 
     deps = [
         assertJ         : 'org.assertj:assertj-core:3.26.3',
