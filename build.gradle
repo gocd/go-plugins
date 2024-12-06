@@ -31,7 +31,7 @@ ext {
     deps = [
         assertJ         : 'org.assertj:assertj-core:3.26.3',
         gson            : 'com.google.code.gson:gson:2.11.0',
-        jgit            : 'org.eclipse.jgit:org.eclipse.jgit:7.0.0.202409031743-r',
+        jgit            : 'org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r',
         junit5          : 'org.junit.jupiter:junit-jupiter-api:5.11.3',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.1',
         mockitoCore     : 'org.mockito:mockito-core:5.14.2',
