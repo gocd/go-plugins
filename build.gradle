@@ -30,7 +30,7 @@ ext {
 
     deps = [
         assertJ         : 'org.assertj:assertj-core:3.27.3',
-        gson            : 'com.google.code.gson:gson:2.12.1',
+        gson            : 'com.google.code.gson:gson:2.13.1',
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:7.2.0.202503040940-r',
         junit5          : 'org.junit.jupiter:junit-jupiter-api:5.12.1',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.1',
