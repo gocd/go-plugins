@@ -16,7 +16,7 @@
 
 description = 'Plugin with multiple load methods'
 
-project.ext.pluginDesc = [
+def pluginDesc = [
   id         : 'PluginWithMultipleLoadMethods',
   version    : '1.0',
   goCdVersion: '18.6.0',
@@ -30,7 +30,7 @@ processResources {
   duplicatesStrategy = DuplicatesStrategy.INCLUDE
   from("src/main/resources") {
     filesMatching('plugin.xml') {
-      expand project.pluginDesc
+      expand pluginDesc
     }
   }
 }
