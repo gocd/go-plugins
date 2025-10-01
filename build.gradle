@@ -29,12 +29,12 @@ ext {
     goVersion = '25.4.0'
 
     deps = [
-        assertJ         : 'org.assertj:assertj-core:3.27.3',
-        gson            : 'com.google.code.gson:gson:2.13.1',
+        assertJ         : 'org.assertj:assertj-core:3.27.6',
+        gson            : 'com.google.code.gson:gson:2.13.2',
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:7.3.0.202506031305-r',
-        junit5          : 'org.junit.jupiter:junit-jupiter-api:5.13.4',
+        junit5          : 'org.junit.jupiter:junit-jupiter-api:6.0.0',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.3',
-        mockitoCore     : 'org.mockito:mockito-core:5.18.0',
+        mockitoCore     : 'org.mockito:mockito-core:5.20.0',
         okHttp          : 'com.squareup.okhttp3:okhttp:5.1.0',
     ]
 
