@@ -45,14 +45,9 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
+        options.release = 17
         options.encoding = 'UTF-8'
-        options.release = JavaLanguageVersion.of(17).asInt()
     }
 
     repositories {
