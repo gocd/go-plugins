@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-allprojects {
-    apply plugin: 'maven-publish'
-
-    group = 'com.thoughtworks.go'
-    version = '1.0'
+plugins {
+    id 'maven-publish'
 }
+
+group = 'com.thoughtworks.go'
+version = '1.0'
 
 static String versionOf(String dependencySpec) {
     return dependencySpec.split(':').last()
@@ -42,9 +42,11 @@ ext {
 }
 
 subprojects {
-    plugins {
-        id 'java-library'
-    }
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    group = 'com.thoughtworks.go'
+    version = '1.0'
 
     java {
         sourceCompatibility = JavaVersion.VERSION_17
