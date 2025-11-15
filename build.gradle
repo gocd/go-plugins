@@ -32,9 +32,9 @@ ext {
         assertJ         : 'org.assertj:assertj-core:3.27.6',
         gson            : 'com.google.code.gson:gson:2.13.2',
         jgit            : 'org.eclipse.jgit:org.eclipse.jgit:7.4.0.202509020913-r',
-        junit5          : 'org.junit.jupiter:junit-jupiter-api:6.0.1',
+        junit5          : 'org.junit:junit-bom:6.0.1',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.3',
-        mockitoCore     : 'org.mockito:mockito-core:5.20.0',
+        mockito         : 'org.mockito:mockito-bom:5.20.0',
         okHttp          : 'com.squareup.okhttp3:okhttp:5.3.0',
     ]
 
@@ -66,12 +66,14 @@ subprojects {
     dependencies {
         compileOnly "cd.go.plugin:go-plugin-api:${project.goVersion}"
 
-        testImplementation project.deps.junit5
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project.versions.junit5}"
+        testImplementation platform(project.deps.junit5)
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
         testImplementation project.deps.assertJ
-        testImplementation project.deps.mockitoCore
-        testImplementation "org.mockito:mockito-junit-jupiter:${project.versions.mockitoCore}"
+        testImplementation platform(project.deps.mockito)
+        testImplementation 'org.mockito:mockito-core'
+        testImplementation 'org.mockito:mockito-junit-jupiter'
         testImplementation "cd.go.plugin:go-plugin-api:${project.goVersion}"
     }
 
