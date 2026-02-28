@@ -18,7 +18,9 @@ description = 'Dummy artifact plugin'
 
 
 dependencies {
-    implementation project.deps.gson
+    implementation(project.deps.gson) {
+        exclude(module: 'error_prone_annotations') // Not needed at runtime
+    }
     implementation project.deps.okHttp
 
     testImplementation project.deps.jsonAssert

@@ -17,7 +17,9 @@
 description = 'Test valid subclass plugin'
 
 dependencies {
-    implementation project.deps.gson
+    implementation(project.deps.gson) {
+        exclude(module: 'error_prone_annotations') // Not needed at runtime
+    }
     compileOnly project(':test-valid-staticclass-plugin')
     implementation files('lib/dependency.jar')
 }
