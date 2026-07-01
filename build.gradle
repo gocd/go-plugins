@@ -31,11 +31,11 @@ ext {
     deps = [
         assertJ         : 'org.assertj:assertj-core:3.27.7',
         gson            : 'com.google.code.gson:gson:2.14.0',
-        jgit            : 'org.eclipse.jgit:org.eclipse.jgit:7.6.0.202603022253-r',
-        junit5          : 'org.junit:junit-bom:6.1.0',
+        jgit            : 'org.eclipse.jgit:org.eclipse.jgit:7.7.0.202606012155-r',
+        junit5          : 'org.junit:junit-bom:6.1.1',
         jsonAssert      : 'org.skyscreamer:jsonassert:1.5.3',
         mockito         : 'org.mockito:mockito-bom:5.23.0',
-        okHttp          : 'com.squareup.okhttp3:okhttp:5.3.2',
+        okHttp          : 'com.squareup.okhttp3:okhttp:5.4.0',
     ]
 
     versions = project.ext.deps.collectEntries { lib, libGav -> [lib, versionOf(libGav)] }
