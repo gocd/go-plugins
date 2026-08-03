@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  implementation project.deps.gson
+  implementation rootProject.deps.gson
   implementation files('lib/dependency.jar')
 }
 

@@ -17,7 +17,7 @@
 description = ''
 
 dependencies {
-    implementation(project.deps.gson) {
+    implementation(rootProject.deps.gson) {
         exclude(module: 'error_prone_annotations') // Not needed at runtime
     }
     implementation files('lib/dependency.jar')
