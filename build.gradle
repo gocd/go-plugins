@@ -58,21 +58,6 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    repositories {
-        mavenCentral()
-        // Same property/semantics as the internal GoCD build environment init script uses (see
-        // gradle.properties): mavenLocal is only for locally-published unreleased artifacts of
-        // the listed groups, e.g go-plugin-api with `goVersion` overridden
-        def localGroups = providers.gradleProperty('allowMavenLocalForGroups')
-        if (localGroups.present) {
-            mavenLocal {
-                content {
-                    localGroups.get().split(',').each { includeGroupAndSubgroups(it.trim()) }
-                }
-            }
-        }
-    }
-
     dependencies {
         compileOnly "cd.go.plugin:go-plugin-api:${project.goVersion}"
 
