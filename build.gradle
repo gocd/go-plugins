@@ -76,12 +76,12 @@ subprojects {
     dependencies {
         compileOnly "cd.go.plugin:go-plugin-api:${project.goVersion}"
 
-        testImplementation platform(project.deps.junit5)
+        testImplementation platform(rootProject.deps.junit5)
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-        testImplementation project.deps.assertJ
-        testImplementation platform(project.deps.mockito)
+        testImplementation rootProject.deps.assertJ
+        testImplementation platform(rootProject.deps.mockito)
         testImplementation 'org.mockito:mockito-core'
         testImplementation 'org.mockito:mockito-junit-jupiter'
         testImplementation "cd.go.plugin:go-plugin-api:${project.goVersion}"
